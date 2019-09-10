@@ -18,11 +18,9 @@ module.exports = class QuizSessionRestResource {
                 console.error('getSession', error);
                 response.status(500).send(error);
             } else if (result.records.length === 0) {
-                response
-                    .status(404)
-                    .send({
-                        message: 'Could not retrieve Quiz Session record.'
-                    });
+                response.status(404).send({
+                    message: 'Could not retrieve Quiz Session record.'
+                });
             } else {
                 response.send(result.records[0]);
             }
