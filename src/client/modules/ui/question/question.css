@@ -1,0 +1,37 @@
+:host {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+}
+
+.answer {
+    width: 50%;
+    display: flex;
+}
+
+.answer button {
+    width: 100%;
+    font-weight: bold;
+    border-radius: 0.5rem;
+    border-width: 0;
+    font-size: xx-large;
+    color: #ffffff;
+    margin: 1rem;
+}
+
+.answer button[data-answer='a'] {
+    background-color: #1589ee;
+}
+
+.answer button[data-answer='b'] {
+    background-color: #ff9e2c;
+}
+
+.answer button[data-answer='c'] {
+    background-color: #d4504c;
+}
+
+.answer button[data-answer='d'] {
+    background-color: #04844b;
+}
