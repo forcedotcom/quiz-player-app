@@ -66,7 +66,7 @@ register(isNicknameAvailable, eventTarget => {
 /**
  * Registers a player
  * @param {string} nickname
- * @returns {Promise<String>} Promise holding the Player record id
+ * @returns {Promise<*>} Promise holding the Player record
  */
 export function registerPlayer(nickname) {
     return fetch(PLAYERS_REST_URL, {

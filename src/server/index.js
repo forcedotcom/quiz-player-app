@@ -2,7 +2,8 @@ const express = require('express'),
     jsforce = require('jsforce'),
     WebSocketService = require('./utils/webSocketService.js'),
     QuizSessionRestResource = require('./rest/quiz-session.js'),
-    PlayerRestResource = require('./rest/player.js');
+    PlayerRestResource = require('./rest/player.js'),
+    AnswerRestResource = require('./rest/answer.js');
 
 // Load and check config
 require('dotenv').config();
@@ -61,5 +62,11 @@ module.exports = app => {
     });
     app.post('/api/players', (request, response) => {
         playerRest.registerPlayer(request, response);
+    });
+
+    // Setup Answer REST resources
+    const answerRest = new AnswerRestResource(sfdc);
+    app.post('/api/answers', (request, response) => {
+        answerRest.submitAnswer(request, response);
     });
 };

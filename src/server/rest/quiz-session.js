@@ -16,13 +16,13 @@ module.exports = class QuizSessionRestResource {
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('getSession', error);
-                response.status(500).send(error);
+                response.status(500).json(error);
             } else if (result.records.length === 0) {
-                response.status(404).send({
+                response.status(404).json({
                     message: 'Could not retrieve Quiz Session record.'
                 });
             } else {
-                response.send(result.records[0]);
+                response.json(result.records[0]);
             }
         });
     }

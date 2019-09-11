@@ -8,7 +8,7 @@ module.exports = class PlayerRestResource {
         if (!nickname) {
             response
                 .status(400)
-                .send({ message: 'Missing nickname parameter.' });
+                .json({ message: 'Missing nickname parameter.' });
             return;
         }
 
@@ -18,7 +18,7 @@ module.exports = class PlayerRestResource {
                 console.error('isNicknameAvailable', error);
                 response.sendStatus(500);
             } else {
-                response.send({
+                response.json({
                     nickname,
                     isAvailable: result.records.length === 0
                 });
@@ -31,7 +31,7 @@ module.exports = class PlayerRestResource {
         if (!nickname) {
             response
                 .status(400)
-                .send({ message: 'Missing nickname parameter.' });
+                .json({ message: 'Missing nickname parameter.' });
             return;
         }
 
@@ -46,17 +46,17 @@ module.exports = class PlayerRestResource {
                             'FIELD_CUSTOM_VALIDATION_EXCEPTION' &&
                         error.fields.includes('Name')
                     ) {
-                        response.status(409).send({
+                        response.status(409).json({
                             message: `Nickname '${nickname}' is already in use.`
                         });
                     } else {
                         console.error('registerPlayer ', error);
                         response
                             .status(500)
-                            .send({ message: 'Failed to register player.' });
+                            .json({ message: 'Failed to register player.' });
                     }
                 } else {
-                    response.send(result);
+                    response.json(result);
                 }
             });
     }

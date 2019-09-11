@@ -1,16 +1,29 @@
 /**
  * Handles Fetch API JSON responses
  * @param {*} response
+ * @returns {Promise<*>} Promise holding JSON parsed data or null if response holds no JSON
  */
 const fetchJson = response => {
     return new Promise((resolve, reject) => {
-        response.json().then(json => {
+        if (
+            response.headers.get('Content-Type') ===
+            'application/json; charset=utf-8'
+        ) {
+            response.json().then(json => {
+                if (!response.ok) {
+                    reject(json);
+                } else {
+                    resolve(json);
+                }
+            });
+        } else {
+            // Safely handle non JSON responses
             if (!response.ok) {
-                reject(json);
+                reject(null);
             } else {
-                resolve(json);
+                resolve(null);
             }
-        });
+        }
     });
 };
 
