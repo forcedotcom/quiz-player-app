@@ -39,10 +39,22 @@ module.exports = class PlayerRestResource {
             .sobject('Quiz_Player__c')
             .insert({ Name: nickname }, (error, result) => {
                 if (error || !result.success) {
-                    console.error('registerPlayer', error, result);
-                    response
-                        .status(500)
-                        .send({ message: 'Failed to register player.' });
+                    if (
+                        error.errorCode &&
+                        error.fields &&
+                        error.errorCode ===
+                            'FIELD_CUSTOM_VALIDATION_EXCEPTION' &&
+                        error.fields.includes('Name')
+                    ) {
+                        response.status(409).send({
+                            message: `Nickname '${nickname}' is already in use.`
+                        });
+                    } else {
+                        console.error('registerPlayer ', error);
+                        response
+                            .status(500)
+                            .send({ message: 'Failed to register player.' });
+                    }
                 } else {
                     response.send(result);
                 }
