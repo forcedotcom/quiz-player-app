@@ -13,6 +13,7 @@ logs
 # Tooling files
 node_modules
 jsconfig.json
+.vscode
 
 # Temp directory
 /tmp

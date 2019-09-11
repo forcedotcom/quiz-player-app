@@ -3,10 +3,11 @@ import { fetchJson } from 'utils/fetch';
 
 export const PHASES = Object.freeze({
     REGISTRATION: 'Registration',
-    PRE_QUESTION: 'Pre-question',
+    PRE_QUESTION: 'PreQuestion',
     QUESTION: 'Question',
-    POST_QUESTION: 'Post-question',
-    RESULTS: 'Results'
+    POST_QUESTION: 'PostQuestion',
+    QUESTION_RESULTS: 'QuestionResults',
+    GAME_RESULTS: 'GameResults'
 });
 
 export function getCurrentSession(config) {
@@ -20,7 +21,12 @@ export function getCurrentSession(config) {
 }
 
 function getData(config, observer) {
-    fetch('/api/quiz-sessions')
+    fetch('/api/quiz-sessions', {
+        headers: {
+            pragma: 'no-cache',
+            'cache-control': 'no-cache'
+        }
+    })
         .then(fetchJson)
         .then(jsonResponse => {
             observer.next(jsonResponse);

@@ -69,6 +69,8 @@ export default class App extends LightningElement {
         console.log(answer);
     }
 
+    // UI expressions
+
     get isAuthenticated() {
         return this.nickname !== '';
     }
@@ -89,7 +91,11 @@ export default class App extends LightningElement {
         return this.session.Phase__c === PHASES.POST_QUESTION;
     }
 
-    get isResultsPhase() {
-        return this.session.Phase__c === PHASES.RESULTS;
+    get isQuestionResultsPhase() {
+        return this.session.Phase__c === PHASES.QUESTION_RESULTS;
+    }
+
+    get isGameResultsPhase() {
+        return this.session.Phase__c === PHASES.GAME_RESULTS;
     }
 }

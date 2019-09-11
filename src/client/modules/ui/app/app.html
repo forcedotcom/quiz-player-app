@@ -39,8 +39,13 @@
                 <ui-spinner></ui-spinner>
             </template>
 
-            <!-- Results -->
-            <template if:true={isResultsPhase}>
+            <!-- Question Results -->
+            <template if:true={isQuestionResultsPhase}>
+                <h1>The correct answer was...</h1>
+            </template>
+
+            <!-- Game Results -->
+            <template if:true={isGameResultsPhase}>
                 <h1>Game over. Collecting results...</h1>
                 <ui-spinner></ui-spinner>
             </template>
