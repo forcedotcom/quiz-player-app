@@ -41,18 +41,16 @@
     },
     "repository": "pozil/quiz",
     "scripts": {
-        "start": "npm run build:development && npm run serve",
+        "start": "npm run build:production && node src/server/server.js",
         "build": "lwc-services build -m production",
         "build:development": "lwc-services build",
         "lint": "eslint ./src/**/*.js",
         "prettier": "prettier --write '**/*.{css,html,js,json,md,yaml,yml}'",
         "prettier:verify": "prettier --list-different '**/*.{css,html,js,json,md,yaml,yml}'",
-        "serve": "lwc-services serve",
         "test:unit": "lwc-services test:unit",
         "test:unit:coverage": "lwc-services test:unit --coverage",
         "test:unit:debug": "lwc-services test:unit --debug",
         "test:unit:watch": "lwc-services test:unit --watch",
-        "watch": "lwc-services watch",
         "preinstall": "rm -fr src/client/resources/dist",
         "postinstall": "mkdir -p src/client/resources/dist && cp node_modules/normalize.css/normalize.css src/client/resources/dist/."
     }
