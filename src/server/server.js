@@ -62,6 +62,9 @@ const playerRest = new PlayerRestResource(sfdc);
 app.get('/api/players', (request, response) => {
     playerRest.isNicknameAvailable(request, response);
 });
+app.get('/api/players/:playerId/leaderboard', (request, response) => {
+    playerRest.getPlayerLeaderboard(request, response);
+});
 app.post('/api/players', (request, response) => {
     playerRest.registerPlayer(request, response);
 });
