@@ -2,6 +2,7 @@ import { register, ValueChangedEvent } from '@lwc/wire-service';
 import { fetchJson } from 'utils/fetch';
 
 const PLAYERS_REST_URL = '/api/players';
+const PLAYERS_SCORE_URL = '/api/score';
 
 export function isNicknameAvailable(config) {
     return new Promise((resolve, reject) => {
@@ -11,6 +12,11 @@ export function isNicknameAvailable(config) {
         };
         getData(config, observer);
     });
+}
+
+export function getScoreAndRanking(config) {
+    const nickname = config && config.nickname ? config.nickname : null;
+    return fetch(`${PLAYERS_SCORE_URL}}?nickname=${nickname}`).then(fetchJson);
 }
 
 function getData(config, observer) {

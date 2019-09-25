@@ -63,6 +63,9 @@ module.exports = app => {
     app.post('/api/players', (request, response) => {
         playerRest.registerPlayer(request, response);
     });
+    app.get('/api/score', (request, response) => {
+        playerRest.getScoreAndRanking(request, response);
+    });
 
     // Setup Answer REST resources
     const answerRest = new AnswerRestResource(sfdc);

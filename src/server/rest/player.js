@@ -26,6 +26,26 @@ module.exports = class PlayerRestResource {
         });
     }
 
+    getScoreAndRanking(request, response) {
+        const { nickname } = request.query;
+        if (!nickname) {
+            response
+                .status(400)
+                .json({ message: 'Missing nickname parameter.' });
+            return;
+        }
+
+        const soql = `SELECT Ranking__c, Score__c FROM Quiz_Player__c WHERE Name='${nickname}'`;
+        this.sfdc.query(soql, (error, result) => {
+            if (error) {
+                console.error('getScoreAndRanking', error);
+                response.sendStatus(500);
+            } else {
+                response.json(result);
+            }
+        });
+    }
+
     registerPlayer(request, response) {
         const { nickname } = request.body;
         if (!nickname) {
