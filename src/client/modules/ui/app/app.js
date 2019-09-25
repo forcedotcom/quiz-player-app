@@ -6,6 +6,7 @@ import { getCookie, setCookie } from 'utils/cookies';
 import { WebSocketClient } from 'utils/webSocketClient';
 
 import { PHASES, getCurrentSession } from 'services/session';
+import { getPlayerLeaderboard } from 'services/player';
 
 const COOKIE_PLAYER_NICKNAME = 'nickname';
 const COOKIE_PLAYER_ID = 'playerId';
@@ -14,8 +15,9 @@ export default class App extends LightningElement {
     @track nickname;
     @track session;
     @track errorMessage;
+    @track playerId;
+    @track playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
 
-    playerId;
     pingTimeout;
     ws;
 
@@ -23,6 +25,15 @@ export default class App extends LightningElement {
     getCurrentSession({ error, data }) {
         if (data) {
             this.session = data;
+        } else if (error) {
+            this.errorMessage = getErrorMessage(error);
+        }
+    }
+
+    @wire(getPlayerLeaderboard, { playerId: '$playerId' })
+    getPlayerLeaderboard({ error, data }) {
+        if (data) {
+            this.playerLeaderboard = data;
         } else if (error) {
             this.errorMessage = getErrorMessage(error);
         }
