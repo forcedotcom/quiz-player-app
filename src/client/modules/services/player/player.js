@@ -3,17 +3,51 @@ import { fetchJson } from 'utils/fetch';
 
 const PLAYERS_REST_URL = '/api/players';
 
+/**
+ * Checks if a given player nickname is available
+ * @param {*} config object that contains nickname
+ */
 export function isNicknameAvailable(config) {
     return new Promise((resolve, reject) => {
         const observer = {
             next: data => resolve(data),
             error: error => reject(error)
         };
-        getData(config, observer);
+        getNicknameData(config, observer);
     });
 }
 
-function getData(config, observer) {
+/**
+ * Gets a player's leaderboard (score and rank)
+ * @param {*} config
+ */
+export function getPlayerLeaderboard(config) {
+    return new Promise((resolve, reject) => {
+        const observer = {
+            next: data => resolve(data),
+            error: error => reject(error)
+        };
+        getPlayerLeaderboardData(config, observer);
+    });
+}
+
+/**
+ * Registers a player
+ * @param {string} nickname
+ * @returns {Promise<*>} Promise holding the Player record
+ */
+export function registerPlayer(nickname) {
+    return fetch(PLAYERS_REST_URL, {
+        method: 'post',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nickname })
+    }).then(fetchJson);
+}
+
+function getNicknameData(config, observer) {
     const nickname = config && config.nickname ? config.nickname : null;
     if (nickname === null) {
         observer.next({ nickname: '', isAvailable: true });
@@ -22,6 +56,28 @@ function getData(config, observer) {
 
     // Call players API to check if nickname is available (cache disabled)
     fetch(`${PLAYERS_REST_URL}?nickname=${nickname}`, {
+        headers: {
+            pragma: 'no-cache',
+            'cache-control': 'no-cache'
+        }
+    })
+        .then(fetchJson)
+        .then(jsonResponse => {
+            observer.next(jsonResponse);
+        })
+        .catch(error => {
+            observer.error(error);
+        });
+}
+
+function getPlayerLeaderboardData(config, observer) {
+    const playerId = config && config.playerId ? config.playerId : null;
+    if (playerId === null) {
+        return;
+    }
+
+    // Call players API to get player's leaderboard (score and rank)
+    fetch(`${PLAYERS_REST_URL}/${playerId}/leaderboard`, {
         headers: {
             pragma: 'no-cache',
             'cache-control': 'no-cache'
@@ -55,26 +111,37 @@ register(isNicknameAvailable, eventTarget => {
 
     eventTarget.addEventListener('config', newConfig => {
         config = newConfig;
-        getData(config, observer);
+        getNicknameData(config, observer);
     });
 
     eventTarget.addEventListener('connect', () => {
-        getData(config, observer);
+        getNicknameData(config, observer);
     });
 });
 
-/**
- * Registers a player
- * @param {string} nickname
- * @returns {Promise<*>} Promise holding the Player record
- */
-export function registerPlayer(nickname) {
-    return fetch(PLAYERS_REST_URL, {
-        method: 'post',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ nickname })
-    }).then(fetchJson);
-}
+register(getPlayerLeaderboard, eventTarget => {
+    let config;
+    eventTarget.dispatchEvent(
+        new ValueChangedEvent({ data: undefined, error: undefined })
+    );
+
+    const observer = {
+        next: data =>
+            eventTarget.dispatchEvent(
+                new ValueChangedEvent({ data, error: undefined })
+            ),
+        error: error =>
+            eventTarget.dispatchEvent(
+                new ValueChangedEvent({ data: undefined, error })
+            )
+    };
+
+    eventTarget.addEventListener('config', newConfig => {
+        config = newConfig;
+        getPlayerLeaderboardData(config, observer);
+    });
+
+    eventTarget.addEventListener('connect', () => {
+        getPlayerLeaderboardData(config, observer);
+    });
+});
