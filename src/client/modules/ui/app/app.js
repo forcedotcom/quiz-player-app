@@ -10,8 +10,6 @@ import { PHASES, getCurrentSession } from 'services/session';
 const COOKIE_PLAYER_NICKNAME = 'nickname';
 const COOKIE_PLAYER_ID = 'playerId';
 
-const WEB_SOCKET_PORT = 8081;
-
 export default class App extends LightningElement {
     @track nickname;
     @track session;
@@ -37,9 +35,7 @@ export default class App extends LightningElement {
         // Get WebSocket URL
         const wsUrl =
             (window.location.protocol === 'http:' ? 'ws://' : 'wss://') +
-            window.location.hostname +
-            ':' +
-            WEB_SOCKET_PORT;
+            window.location.host;
         // Connect WebSocket
         this.ws = new WebSocketClient(wsUrl);
         this.ws.connect();

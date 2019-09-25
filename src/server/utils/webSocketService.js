@@ -1,17 +1,16 @@
 const WebSocket = require('ws');
 
-const WSS_PORT = 8081;
-const WSS_PING_INTERVAL = 30000;
+const WSS_PING_INTERVAL = 29000;
 
 module.exports = class WebSocketService {
     constructor() {
         this.messageListeners = [];
     }
 
-    connect() {
+    connect(server) {
         // Start WebSocket server
         this.wss = new WebSocket.Server({
-            port: WSS_PORT,
+            server,
             clientTracking: true
         });
         // Listen for WS client connections
@@ -40,7 +39,7 @@ module.exports = class WebSocketService {
         // eslint-disable-next-line @lwc/lwc/no-async-operation
         setInterval(() => {
             this.wss.clients.forEach(wsClient => {
-                if (wsClient.isAlive === false) {
+                if (!wsClient.isAlive) {
                     console.log('WS removing inactive client');
                     wsClient.terminate();
                 } else {
