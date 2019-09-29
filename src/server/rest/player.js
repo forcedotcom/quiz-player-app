@@ -76,7 +76,7 @@ module.exports = class PlayerRestResource {
                 console.error('getPlayerLeaderboard', error);
                 response.sendStatus(500);
             } else if (result.records.length === 0) {
-                response.sendStatus(404);
+                response.status(404).json({ message: 'Unkown player.' });
             } else {
                 response.json(result.records[0]);
             }

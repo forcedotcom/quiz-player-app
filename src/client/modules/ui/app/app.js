@@ -2,7 +2,7 @@
 import { LightningElement, track, wire } from 'lwc';
 
 import { getErrorMessage } from 'utils/error';
-import { getCookie, setCookie } from 'utils/cookies';
+import { getCookie, setCookie, clearAllCookies } from 'utils/cookies';
 import { WebSocketClient } from 'utils/webSocketClient';
 
 import { PHASES, getCurrentSession } from 'services/session';
@@ -26,6 +26,9 @@ export default class App extends LightningElement {
         if (data) {
             this.session = data;
         } else if (error) {
+            if (error.status && error.status === 404) {
+                this.resetGame();
+            }
             this.errorMessage = getErrorMessage(error);
         }
     }
@@ -35,6 +38,9 @@ export default class App extends LightningElement {
         if (data) {
             this.playerLeaderboard = data;
         } else if (error) {
+            if (error.status && error.status === 404) {
+                this.resetGame();
+            }
             this.errorMessage = getErrorMessage(error);
         }
     }
@@ -58,6 +64,9 @@ export default class App extends LightningElement {
     handleWsMessage(message) {
         if (message.type === 'phaseChangeEvent') {
             this.session = message.data;
+            if (this.session === PHASES.REGISTRATION) {
+                this.resetGame();
+            }
         }
     }
 
@@ -74,6 +83,11 @@ export default class App extends LightningElement {
     handleAnswer(event) {
         const { answer } = event.detail;
         console.log(answer);
+    }
+
+    resetGame() {
+        clearAllCookies();
+        window.location.reload();
     }
 
     // UI expressions

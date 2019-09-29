@@ -38,17 +38,24 @@ sfdc.login(SF_USERNAME, SF_PASSWORD + SF_TOKEN, err => {
 }).then(() => {
     console.log('Connected to Salesforce');
     // Subscribe to Change Data Capture on Quiz Session record
-    sfdc.streaming.topic('/data/Quiz_Session__ChangeEvent').subscribe(event => {
-        const { Phase__c } = event.payload;
-        // Reformat message and send it to client via WebSocket
-        const message = {
-            type: 'phaseChangeEvent',
-            data: {
-                Phase__c
+    sfdc.streaming
+        .topic('/data/Quiz_Session__ChangeEvent')
+        .subscribe(cdcEvent => {
+            console.log(cdcEvent.payload);
+            const { Phase__c } = cdcEvent.payload;
+            const header = cdcEvent.payload.ChangeEventHeader;
+            // Filter events related to phase changes
+            if (header.changeType === 'UPDATE' && Phase__c) {
+                // Reformat message and send it to client via WebSocket
+                const message = {
+                    type: 'phaseChangeEvent',
+                    data: {
+                        Phase__c
+                    }
+                };
+                wss.broadcast(JSON.stringify(message));
             }
-        };
-        wss.broadcast(JSON.stringify(message));
-    });
+        });
 });
 
 // Setup Quiz Session REST resources
