@@ -28,7 +28,8 @@ const wss = new WebSocketService();
 
 // Connect to Salesforce
 const sfdc = new jsforce.Connection({
-    loginUrl: SF_LOGIN_URL
+    loginUrl: SF_LOGIN_URL,
+    version: '47.0'
 });
 sfdc.login(SF_USERNAME, SF_PASSWORD + SF_TOKEN, err => {
     if (err) {
