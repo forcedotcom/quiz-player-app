@@ -7,6 +7,7 @@ import { WebSocketClient } from 'utils/webSocketClient';
 
 import { PHASES, getCurrentSession } from 'services/session';
 import { getPlayerLeaderboard } from 'services/player';
+import { submitAnswer } from 'services/answer';
 
 const COOKIE_PLAYER_NICKNAME = 'nickname';
 const COOKIE_PLAYER_ID = 'playerId';
@@ -82,7 +83,12 @@ export default class App extends LightningElement {
 
     handleAnswer(event) {
         const { answer } = event.detail;
-        console.log(answer);
+        this.session.Phase__c = PHASES.POST_QUESTION;
+        submitAnswer(answer)
+            .then(() => {})
+            .catch(error => {
+                this.errorMessage = getErrorMessage(error);
+            });
     }
 
     resetGame() {
