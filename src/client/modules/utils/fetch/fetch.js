@@ -11,6 +11,10 @@ const fetchJson = response => {
         ) {
             response.json().then(json => {
                 if (!response.ok) {
+                    if (!json) {
+                        json = {};
+                    }
+                    json.status = response.status;
                     reject(json);
                 } else {
                     resolve(json);

@@ -2,10 +2,11 @@
 import { LightningElement, track, wire } from 'lwc';
 
 import { getErrorMessage } from 'utils/error';
-import { getCookie, setCookie } from 'utils/cookies';
+import { getCookie, setCookie, clearAllCookies } from 'utils/cookies';
 import { WebSocketClient } from 'utils/webSocketClient';
 
 import { PHASES, getCurrentSession } from 'services/session';
+import { getPlayerLeaderboard } from 'services/player';
 import { submitAnswer } from 'services/answer';
 
 const COOKIE_PLAYER_NICKNAME = 'nickname';
@@ -15,8 +16,9 @@ export default class App extends LightningElement {
     @track nickname;
     @track session;
     @track errorMessage;
+    @track playerId;
+    @track playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
 
-    playerId;
     pingTimeout;
     ws;
 
@@ -25,6 +27,21 @@ export default class App extends LightningElement {
         if (data) {
             this.session = data;
         } else if (error) {
+            if (error.status && error.status === 404) {
+                this.resetGame();
+            }
+            this.errorMessage = getErrorMessage(error);
+        }
+    }
+
+    @wire(getPlayerLeaderboard, { playerId: '$playerId' })
+    getPlayerLeaderboard({ error, data }) {
+        if (data) {
+            this.playerLeaderboard = data;
+        } else if (error) {
+            if (error.status && error.status === 404) {
+                this.resetGame();
+            }
             this.errorMessage = getErrorMessage(error);
         }
     }
@@ -48,6 +65,9 @@ export default class App extends LightningElement {
     handleWsMessage(message) {
         if (message.type === 'phaseChangeEvent') {
             this.session = message.data;
+            if (this.session === PHASES.REGISTRATION) {
+                this.resetGame();
+            }
         }
     }
 
@@ -69,6 +89,11 @@ export default class App extends LightningElement {
             .catch(error => {
                 this.errorMessage = getErrorMessage(error);
             });
+    }
+
+    resetGame() {
+        clearAllCookies();
+        window.location.reload();
     }
 
     // UI expressions
