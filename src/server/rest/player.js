@@ -60,4 +60,26 @@ module.exports = class PlayerRestResource {
                 }
             });
     }
+
+    getPlayerLeaderboard(request, response) {
+        const { playerId } = request.params;
+        if (!playerId) {
+            response
+                .status(400)
+                .json({ message: 'Missing playerId parameter.' });
+            return;
+        }
+
+        const soql = `SELECT Score__c, Ranking__c FROM Quiz_Player__c WHERE Id='${playerId}'`;
+        this.sfdc.query(soql, (error, result) => {
+            if (error) {
+                console.error('getPlayerLeaderboard', error);
+                response.sendStatus(500);
+            } else if (result.records.length === 0) {
+                response.status(404).json({ message: 'Unkown player.' });
+            } else {
+                response.json(result.records[0]);
+            }
+        });
+    }
 };

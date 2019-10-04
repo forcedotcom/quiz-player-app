@@ -26,7 +26,8 @@ const wss = new WebSocketService();
 
 // Connect to Salesforce
 const sfdc = new jsforce.Connection({
-    loginUrl: Configuration.getSfLoginUrl()
+    loginUrl: Configuration.getSfLoginUrl(),
+    version: '47.0'
 });
 sfdc.login(
     Configuration.getSfUsername(),
@@ -54,6 +55,9 @@ app.put('/api/quiz-sessions', (request, response) => {
 const playerRest = new PlayerRestResource(sfdc);
 app.get('/api/players', (request, response) => {
     playerRest.isNicknameAvailable(request, response);
+});
+app.get('/api/players/:playerId/leaderboard', (request, response) => {
+    playerRest.getPlayerLeaderboard(request, response);
 });
 app.post('/api/players', (request, response) => {
     playerRest.registerPlayer(request, response);
