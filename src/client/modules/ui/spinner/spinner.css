@@ -1,3 +1,7 @@
+:host {
+    display: block;
+    text-align: center;
+}
 .spinner {
     display: inline-block;
     width: 3rem;

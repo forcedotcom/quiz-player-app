@@ -1,7 +1,6 @@
 :host {
     width: 100%;
 }
-
 header {
     padding: 1rem;
     display: flex;
@@ -11,12 +10,17 @@ header {
     background: #6e8898;
     box-shadow: 0 4px 3px rgba(110, 136, 152, 0.5);
 }
-
 header img {
     height: 3rem;
 }
-
-header h2 {
+h2 {
     font-weight: 300;
     margin: auto 0;
+}
+.app-name {
+    text-overflow: ellipsis;
+}
+.nickname {
+    flex-grow: 1;
+    text-align: right;
 }
