@@ -18,6 +18,7 @@ export default class App extends LightningElement {
     @track errorMessage;
     @track playerId;
     @track playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
+    @track showFooter = false;
 
     pingTimeout;
     ws;
@@ -36,8 +37,10 @@ export default class App extends LightningElement {
 
     @wire(getPlayerLeaderboard, { playerId: '$playerId' })
     getPlayerLeaderboard({ error, data }) {
+        this.showFooter = false;
         if (data) {
             this.playerLeaderboard = data;
+            this.showFooter = true;
         } else if (error) {
             if (error.status && error.status === 404) {
                 this.resetGame();
@@ -79,6 +82,8 @@ export default class App extends LightningElement {
 
         setCookie(COOKIE_PLAYER_ID, playerId);
         this.playerId = playerId;
+
+        this.showFooter = true;
     }
 
     handleAnswer(event) {

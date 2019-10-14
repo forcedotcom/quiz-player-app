@@ -1,62 +1,67 @@
 <template>
     <ui-header nickname={nickname}></ui-header>
 
-    <template if:true={session}>
-        <!-- Unauthenticated -->
-        <template if:false={isAuthenticated}>
-            <template if:true={isRegistrationPhase}>
-                <ui-registration-form
-                    onregistered={handleRegistered}
-                ></ui-registration-form>
+    <div class="body">
+        <template if:true={session}>
+            <!-- Unauthenticated -->
+            <template if:false={isAuthenticated}>
+                <template if:true={isRegistrationPhase}>
+                    <ui-registration-form
+                        onregistered={handleRegistered}
+                    ></ui-registration-form>
+                </template>
+                <template if:false={isRegistrationPhase}>
+                    <h1>Sorry, registrations are closed.</h1>
+                </template>
             </template>
-            <template if:false={isRegistrationPhase}>
-                <h1>Sorry, registrations are closed.</h1>
+
+            <!-- Authenticated -->
+            <template if:true={isAuthenticated}>
+                <!-- Registration -->
+                <template if:true={isRegistrationPhase}>
+                    <h1>Waiting for host to start game...</h1>
+                    <ui-spinner></ui-spinner>
+                </template>
+
+                <!-- Pre-question -->
+                <template if:true={isPreQuestionPhase}>
+                    <h1>Wait for question...</h1>
+                    <ui-spinner></ui-spinner>
+                </template>
+
+                <!-- Question -->
+                <template if:true={isQuestionPhase}>
+                    <ui-question onanswer={handleAnswer}></ui-question>
+                </template>
+
+                <!-- Post-question -->
+                <template if:true={isPostQuestionPhase}>
+                    <h1>Collecting answers...</h1>
+                    <ui-spinner></ui-spinner>
+                </template>
+
+                <!-- Question Results -->
+                <template if:true={isQuestionResultsPhase}>
+                    <h1>The correct answer was...</h1>
+                </template>
+
+                <!-- Game Results -->
+                <template if:true={isGameResultsPhase}>
+                    <h1>Game over. Collecting results...</h1>
+                    <ui-spinner></ui-spinner>
+                </template>
             </template>
         </template>
 
-        <!-- Authenticated -->
-        <template if:true={isAuthenticated}>
-            <!-- Registration -->
-            <template if:true={isRegistrationPhase}>
-                <h1>Waiting for host to start game...</h1>
-                <ui-spinner></ui-spinner>
-            </template>
-
-            <!-- Pre-question -->
-            <template if:true={isPreQuestionPhase}>
-                <h1>Wait for question...</h1>
-                <ui-spinner></ui-spinner>
-            </template>
-
-            <!-- Question -->
-            <template if:true={isQuestionPhase}>
-                <ui-question onanswer={handleAnswer}></ui-question>
-            </template>
-
-            <!-- Post-question -->
-            <template if:true={isPostQuestionPhase}>
-                <h1>Collecting answers...</h1>
-                <ui-spinner></ui-spinner>
-            </template>
-
-            <!-- Question Results -->
-            <template if:true={isQuestionResultsPhase}>
-                <h1>The correct answer was...</h1>
-            </template>
-
-            <!-- Game Results -->
-            <template if:true={isGameResultsPhase}>
-                <h1>Game over. Collecting results...</h1>
-                <ui-spinner></ui-spinner>
-            </template>
-
-            <!-- Footer with score and rank -->
-            <ui-footer leaderboard={playerLeaderboard}></ui-footer>
+        <!-- Errors -->
+        <template if:true={errorMessage}>
+            <h1 class="error">{errorMessage}</h1>
         </template>
-    </template>
+    </div>
+    <!-- End body -->
 
-    <!-- Errors -->
-    <template if:true={errorMessage}>
-        <h1 class="error">{errorMessage}</h1>
+    <!-- Footer with score and rank -->
+    <template if:true={showFooter}>
+        <ui-footer leaderboard={playerLeaderboard}></ui-footer>
     </template>
 </template>
