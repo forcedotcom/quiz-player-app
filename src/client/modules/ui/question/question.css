@@ -20,18 +20,18 @@
     margin: 1rem;
 }
 
-.answer button[data-answer='a'] {
+.answer button[data-answer='A'] {
     background-color: #1589ee;
 }
 
-.answer button[data-answer='b'] {
+.answer button[data-answer='B'] {
     background-color: #ff9e2c;
 }
 
-.answer button[data-answer='c'] {
+.answer button[data-answer='C'] {
     background-color: #d4504c;
 }
 
-.answer button[data-answer='d'] {
+.answer button[data-answer='D'] {
     background-color: #04844b;
 }
