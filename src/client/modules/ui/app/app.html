@@ -31,17 +31,22 @@
 
                 <!-- Question -->
                 <template if:true={isQuestionPhase}>
-                    <ui-question onanswer={handleAnswer}></ui-question>
-                </template>
+                    <!-- Not yet answered -->
+                    <template if:false={lastAnswer}>
+                        <ui-question onanswer={handleAnswer}></ui-question>
+                    </template>
 
-                <!-- Post-question -->
-                <template if:true={isPostQuestionPhase}>
-                    <h1>Collecting answers...</h1>
-                    <ui-spinner></ui-spinner>
+                    <!-- Answered -->
+                    <template if:true={lastAnswer}>
+                        <h1>You answered {lastAnswer}</h1>
+                        <h1>Collecting answers...</h1>
+                        <ui-spinner></ui-spinner>
+                    </template>
                 </template>
 
                 <!-- Question Results -->
                 <template if:true={isQuestionResultsPhase}>
+                    <h1>You answered {lastAnswer}</h1>
                     <h1>The correct answer was...</h1>
                 </template>
 

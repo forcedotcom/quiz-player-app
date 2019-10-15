@@ -34,27 +34,21 @@ const getCookie = cname => {
 };
 
 /**
- * Clears all cookies
+ * Clear cookie
+ * @param {String} cname The name of the cookie to retrieve.
  */
-const clearAllCookies = () => {
-    const cookies = document.cookie.split('; ');
-    cookies.forEach(cookie => {
-        const d = window.location.hostname.split('.');
-        while (d.length > 0) {
-            const cookieBase =
-                encodeURIComponent(cookie.split(';')[0].split('=')[0]) +
-                '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' +
-                d.join('.') +
-                ' ;path=';
-            const p = window.location.pathname.split('/');
-            document.cookie = cookieBase + '/';
-            while (p.length > 0) {
-                document.cookie = cookieBase + p.join('/');
-                p.pop();
-            }
-            d.shift();
-        }
+const clearCookie = cname => {
+    const pathBits = window.location.pathname.split('/');
+    let pathCurrent = ' path=';
+    document.cookie = cname + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT;';
+    pathBits.forEach(pathBit => {
+        pathCurrent += (pathCurrent.substr(-1) !== '/' ? '/' : '') + pathBit;
+        document.cookie =
+            cname +
+            '=; expires=Thu, 01-Jan-1970 00:00:01 GMT;' +
+            pathCurrent +
+            ';';
     });
 };
 
-export { setCookie, getCookie, clearAllCookies };
+export { setCookie, getCookie, clearCookie };
