@@ -5,7 +5,6 @@ export const PHASES = Object.freeze({
     REGISTRATION: 'Registration',
     PRE_QUESTION: 'PreQuestion',
     QUESTION: 'Question',
-    POST_QUESTION: 'PostQuestion',
     QUESTION_RESULTS: 'QuestionResults',
     GAME_RESULTS: 'GameResults'
 });

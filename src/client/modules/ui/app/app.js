@@ -19,6 +19,7 @@ export default class App extends LightningElement {
     @track playerId;
     @track playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
     @track showFooter = false;
+    @track lastAnswer;
 
     pingTimeout;
     ws;
@@ -70,6 +71,8 @@ export default class App extends LightningElement {
             this.session = message.data;
             if (this.session === PHASES.REGISTRATION) {
                 this.resetGame();
+            } else if (this.session === PHASES.QUESTION) {
+                this.lastAnswer = undefined;
             }
         }
     }
@@ -88,7 +91,7 @@ export default class App extends LightningElement {
 
     handleAnswer(event) {
         const { answer } = event.detail;
-        this.session.Phase__c = PHASES.POST_QUESTION;
+        this.lastAnswer = answer;
         submitAnswer(answer)
             .then(() => {})
             .catch(error => {
@@ -117,10 +120,6 @@ export default class App extends LightningElement {
 
     get isQuestionPhase() {
         return this.session.Phase__c === PHASES.QUESTION;
-    }
-
-    get isPostQuestionPhase() {
-        return this.session.Phase__c === PHASES.POST_QUESTION;
     }
 
     get isQuestionResultsPhase() {
