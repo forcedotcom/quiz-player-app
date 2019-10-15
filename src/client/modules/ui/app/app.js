@@ -71,7 +71,7 @@ export default class App extends LightningElement {
             this.session = message.data;
             if (this.session === PHASES.REGISTRATION) {
                 this.resetGame();
-            } else if (this.session === PHASES.QUESTION) {
+            } else if (this.session === PHASES.QUESTION_RESULTS) {
                 this.lastAnswer = undefined;
             }
         }
