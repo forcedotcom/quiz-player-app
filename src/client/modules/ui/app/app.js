@@ -51,6 +51,7 @@ export default class App extends LightningElement {
     }
 
     connectedCallback() {
+        this.lastAnswer = undefined;
         this.nickname = getCookie(COOKIE_PLAYER_NICKNAME);
         this.playerId = getCookie(COOKIE_PLAYER_ID);
 
