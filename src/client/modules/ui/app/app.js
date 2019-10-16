@@ -2,7 +2,7 @@
 import { LightningElement, track, wire } from 'lwc';
 
 import { getErrorMessage } from 'utils/error';
-import { getCookie, setCookie, clearAllCookies } from 'utils/cookies';
+import { getCookie, setCookie, clearCookie } from 'utils/cookies';
 import { WebSocketClient } from 'utils/webSocketClient';
 
 import { PHASES, getCurrentSession } from 'services/session';
@@ -19,6 +19,7 @@ export default class App extends LightningElement {
     @track playerId;
     @track playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
     @track showFooter = false;
+    @track lastAnswer;
 
     pingTimeout;
     ws;
@@ -50,6 +51,7 @@ export default class App extends LightningElement {
     }
 
     connectedCallback() {
+        this.lastAnswer = undefined;
         this.nickname = getCookie(COOKIE_PLAYER_NICKNAME);
         this.playerId = getCookie(COOKIE_PLAYER_ID);
 
@@ -70,6 +72,8 @@ export default class App extends LightningElement {
             this.session = message.data;
             if (this.session === PHASES.REGISTRATION) {
                 this.resetGame();
+            } else if (this.session === PHASES.QUESTION_RESULTS) {
+                this.lastAnswer = undefined;
             }
         }
     }
@@ -88,7 +92,7 @@ export default class App extends LightningElement {
 
     handleAnswer(event) {
         const { answer } = event.detail;
-        this.session.Phase__c = PHASES.POST_QUESTION;
+        this.lastAnswer = answer;
         submitAnswer(answer)
             .then(() => {})
             .catch(error => {
@@ -97,7 +101,8 @@ export default class App extends LightningElement {
     }
 
     resetGame() {
-        clearAllCookies();
+        clearCookie(COOKIE_PLAYER_NICKNAME);
+        clearCookie(COOKIE_PLAYER_ID);
         window.location.reload();
     }
 
@@ -117,10 +122,6 @@ export default class App extends LightningElement {
 
     get isQuestionPhase() {
         return this.session.Phase__c === PHASES.QUESTION;
-    }
-
-    get isPostQuestionPhase() {
-        return this.session.Phase__c === PHASES.POST_QUESTION;
     }
 
     get isQuestionResultsPhase() {
