@@ -20,3 +20,21 @@ h1 {
 .error {
     color: red;
 }
+
+span[data-answer] {
+    padding: 0 0.5rem;
+    color: white;
+    border-radius: 0.3rem;
+}
+span[data-answer='A'] {
+    background-color: #1589ee;
+}
+span[data-answer='B'] {
+    background-color: #ff9e2c;
+}
+span[data-answer='C'] {
+    background-color: #d4504c;
+}
+span[data-answer='D'] {
+    background-color: #04844b;
+}

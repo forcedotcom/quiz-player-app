@@ -51,7 +51,6 @@ export default class App extends LightningElement {
     }
 
     connectedCallback() {
-        this.lastAnswer = undefined;
         this.nickname = getCookie(COOKIE_PLAYER_NICKNAME);
         this.playerId = getCookie(COOKIE_PLAYER_ID);
 
@@ -68,11 +67,12 @@ export default class App extends LightningElement {
     }
 
     handleWsMessage(message) {
+        this.errorMessage = undefined;
         if (message.type === 'phaseChangeEvent') {
             this.session = message.data;
-            if (this.session === PHASES.REGISTRATION) {
+            if (this.session.Phase__c === PHASES.REGISTRATION) {
                 this.resetGame();
-            } else if (this.session === PHASES.QUESTION_RESULTS) {
+            } else if (this.session.Phase__c === PHASES.QUESTION) {
                 this.lastAnswer = undefined;
             }
         }
@@ -91,13 +91,12 @@ export default class App extends LightningElement {
     }
 
     handleAnswer(event) {
+        this.errorMessage = undefined;
         const { answer } = event.detail;
         this.lastAnswer = answer;
-        submitAnswer(answer)
-            .then(() => {})
-            .catch(error => {
-                this.errorMessage = getErrorMessage(error);
-            });
+        submitAnswer(answer).catch(error => {
+            this.errorMessage = getErrorMessage(error);
+        });
     }
 
     resetGame() {
