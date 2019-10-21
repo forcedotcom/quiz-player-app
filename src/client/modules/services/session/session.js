@@ -23,7 +23,7 @@ function getData(config, observer) {
     fetch('/api/quiz-sessions', {
         headers: {
             pragma: 'no-cache',
-            'cache-control': 'no-cache'
+            'Cache-Control': 'no-cache'
         }
     })
         .then(fetchJson)

@@ -58,7 +58,7 @@ function getNicknameData(config, observer) {
     fetch(`${PLAYERS_REST_URL}?nickname=${nickname}`, {
         headers: {
             pragma: 'no-cache',
-            'cache-control': 'no-cache'
+            'Cache-Control': 'no-cache'
         }
     })
         .then(fetchJson)
@@ -80,7 +80,7 @@ function getPlayerLeaderboardData(config, observer) {
     fetch(`${PLAYERS_REST_URL}/${playerId}/leaderboard`, {
         headers: {
             pragma: 'no-cache',
-            'cache-control': 'no-cache'
+            'Cache-Control': 'no-cache'
         }
     })
         .then(fetchJson)
