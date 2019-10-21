@@ -49,13 +49,20 @@
 
                 <!-- Question Results -->
                 <template if:true={isQuestionResultsPhase}>
-                    <h1>
-                        You answered
-                        <span data-answer={lastAnswer}>{lastAnswer}</span>
-                    </h1>
+                    <template if:true={lastAnswer}>
+                        <h1>
+                            You answered
+                            <span data-answer={lastAnswer}>{lastAnswer}</span>
+                        </h1>
+                    </template>
+                    <template if:false={lastAnswer}>
+                        <h1>
+                            You didn't answer in time.
+                        </h1>
+                    </template>
                     <template if:false={isCorrectAnswer}>
                         <h1>
-                            Wrong! The correct answer was
+                            The correct answer was
                             <span data-answer={session.correctAnswer}
                                 >{session.correctAnswer}</span
                             >
