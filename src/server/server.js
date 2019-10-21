@@ -34,6 +34,7 @@ sfdc.login(
     Configuration.getSfSecuredPassword(),
     error => {
         if (error) {
+            console.error('Failed to connect to Salesforce org');
             console.error(error);
             process.exit(-1);
         }

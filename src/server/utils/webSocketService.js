@@ -54,14 +54,19 @@ module.exports = class WebSocketService {
         this.messageListeners.push(listener);
     }
 
+    /**
+     * Broadcasts an object to all WS clients
+     * @param {*} data object sent to WS client
+     */
     broadcast(data) {
         console.log(
             `WS broadcasting to ${this.wss.clients.size} client(s): `,
             data
         );
+        const jsonString = JSON.stringify(data);
         this.wss.clients.forEach(client => {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(data, error => {
+                client.send(jsonString, error => {
                     if (error) {
                         console.error('WS send error ', error);
                     }
