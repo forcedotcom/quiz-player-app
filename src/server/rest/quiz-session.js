@@ -16,17 +16,18 @@ module.exports = class QuizSessionRestResource {
      * @param {*} response
      */
     getSession(request, response) {
-        const soql = `SELECT Phase__c, Current_Question__c FROM Quiz_Session__c`;
+        const soql = `SELECT Phase__c FROM Quiz_Session__c`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('getSession', error);
                 response.status(500).json(error);
-            } else if (result.records.length === 0) {
-                response.status(404).json({
-                    message: 'Could not retrieve Quiz Session record.'
-                });
+            } else if (result.records.length !== 1) {
+                const message = 'Could not retrieve Quiz Session record.';
+                console.error('getSession', message);
+                response.status(404).json({ message });
             } else {
-                response.json(result.records[0]);
+                const record = result.records[0];
+                response.json({ phase: record.Phase__c });
             }
         });
     }
@@ -48,21 +49,59 @@ module.exports = class QuizSessionRestResource {
             return;
         }
         // Check parameters
-        const { Phase__c } = request.body;
-        if (!Phase__c) {
+        const phase = request.body.Phase__c;
+        if (!phase) {
             response
                 .status(400)
                 .json({ message: 'Missing Phase__c parameter.' });
             return;
         }
         // Broadcast phase change via WSS
-        const message = {
+        const phaseChangeEvent = {
             type: 'phaseChangeEvent',
             data: {
-                Phase__c
+                phase
             }
         };
-        this.wss.broadcast(JSON.stringify(message));
-        response.sendStatus(200);
+
+        // Send correct answer when phase is QuestionResults
+        if (phase === 'QuestionResults') {
+            this.getCorrectAnwer()
+                .then(correctAnswer => {
+                    phaseChangeEvent.data.correctAnswer = correctAnswer;
+                    this.wss.broadcast(phaseChangeEvent);
+                    response.sendStatus(200);
+                })
+                .catch(error => {
+                    console.error('updateSession', error);
+                    response.status(500).json(error);
+                });
+        } else {
+            this.wss.broadcast(phaseChangeEvent);
+            response.sendStatus(200);
+        }
+    }
+
+    /**
+     * Gets the correct answer to the current question
+     * @returns {Promise<String>} Promise holding the correct answer
+     */
+    getCorrectAnwer() {
+        return new Promise((resolve, reject) => {
+            const soql = `SELECT Current_Question__r.Correct_Answer__c FROM Quiz_Session__c`;
+            this.sfdc.query(soql, (error, result) => {
+                if (error) {
+                    reject(error);
+                } else if (result.records.length !== 1) {
+                    reject({
+                        message: 'Could not retrieve Quiz Session record.'
+                    });
+                } else {
+                    resolve(
+                        result.records[0].Current_Question__r.Correct_Answer__c
+                    );
+                }
+            });
+        });
     }
 };

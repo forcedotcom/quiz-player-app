@@ -49,8 +49,21 @@
 
                 <!-- Question Results -->
                 <template if:true={isQuestionResultsPhase}>
-                    <h1>You answered {lastAnswer}</h1>
-                    <h1>The correct answer was...</h1>
+                    <h1>
+                        You answered
+                        <span data-answer={lastAnswer}>{lastAnswer}</span>
+                    </h1>
+                    <template if:false={isCorrectAnswer}>
+                        <h1>
+                            Wrong! The correct answer was
+                            <span data-answer={session.correctAnswer}
+                                >{session.correctAnswer}</span
+                            >
+                        </h1>
+                    </template>
+                    <template if:true={isCorrectAnswer}>
+                        <h1>Well done, that's correct!</h1>
+                    </template>
                 </template>
 
                 <!-- Game Results -->

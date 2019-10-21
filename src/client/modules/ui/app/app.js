@@ -16,11 +16,11 @@ export default class App extends LightningElement {
     @track nickname;
     @track session;
     @track errorMessage;
-    @track playerId;
     @track playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
     @track showFooter = false;
     @track lastAnswer;
 
+    playerId;
     pingTimeout;
     ws;
 
@@ -36,23 +36,12 @@ export default class App extends LightningElement {
         }
     }
 
-    @wire(getPlayerLeaderboard, { playerId: '$playerId' })
-    getPlayerLeaderboard({ error, data }) {
-        this.showFooter = false;
-        if (data) {
-            this.playerLeaderboard = data;
-            this.showFooter = true;
-        } else if (error) {
-            if (error.status && error.status === 404) {
-                this.resetGame();
-            }
-            this.errorMessage = getErrorMessage(error);
-        }
-    }
-
     connectedCallback() {
         this.nickname = getCookie(COOKIE_PLAYER_NICKNAME);
-        this.playerId = getCookie(COOKIE_PLAYER_ID);
+        const playerId = getCookie(COOKIE_PLAYER_ID);
+        if (playerId) {
+            this.setPlayer(playerId);
+        }
 
         // Get WebSocket URL
         const wsUrl =
@@ -70,10 +59,19 @@ export default class App extends LightningElement {
         this.errorMessage = undefined;
         if (message.type === 'phaseChangeEvent') {
             this.session = message.data;
-            if (this.session.Phase__c === PHASES.REGISTRATION) {
-                this.resetGame();
-            } else if (this.session.Phase__c === PHASES.QUESTION) {
-                this.lastAnswer = undefined;
+            // eslint-disable-next-line default-case
+            switch (this.session.phase) {
+                case PHASES.REGISTRATION:
+                    this.resetGame();
+                    break;
+                case PHASES.QUESTION:
+                    // Clear last answer
+                    this.lastAnswer = undefined;
+                    break;
+                case PHASES.QUESTION_RESULTS:
+                    // Refresh leaderboard
+                    this.updateLeaderboard();
+                    break;
             }
         }
     }
@@ -85,9 +83,7 @@ export default class App extends LightningElement {
         this.nickname = nickname;
 
         setCookie(COOKIE_PLAYER_ID, playerId);
-        this.playerId = playerId;
-
-        this.showFooter = true;
+        this.setPlayer(playerId);
     }
 
     handleAnswer(event) {
@@ -105,6 +101,26 @@ export default class App extends LightningElement {
         window.location.reload();
     }
 
+    setPlayer(playerId) {
+        this.playerId = playerId;
+        this.updateLeaderboard();
+    }
+
+    updateLeaderboard() {
+        getPlayerLeaderboard({ playerId: this.playerId })
+            .then(data => {
+                this.playerLeaderboard = data;
+                this.showFooter = true;
+            })
+            .catch(error => {
+                this.showFooter = false;
+                if (error.status && error.status === 404) {
+                    this.resetGame();
+                }
+                this.errorMessage = getErrorMessage(error);
+            });
+    }
+
     // UI expressions
 
     get isAuthenticated() {
@@ -112,22 +128,26 @@ export default class App extends LightningElement {
     }
 
     get isRegistrationPhase() {
-        return this.session.Phase__c === PHASES.REGISTRATION;
+        return this.session.phase === PHASES.REGISTRATION;
     }
 
     get isPreQuestionPhase() {
-        return this.session.Phase__c === PHASES.PRE_QUESTION;
+        return this.session.phase === PHASES.PRE_QUESTION;
     }
 
     get isQuestionPhase() {
-        return this.session.Phase__c === PHASES.QUESTION;
+        return this.session.phase === PHASES.QUESTION;
     }
 
     get isQuestionResultsPhase() {
-        return this.session.Phase__c === PHASES.QUESTION_RESULTS;
+        return this.session.phase === PHASES.QUESTION_RESULTS;
     }
 
     get isGameResultsPhase() {
-        return this.session.Phase__c === PHASES.GAME_RESULTS;
+        return this.session.phase === PHASES.GAME_RESULTS;
+    }
+
+    get isCorrectAnswer() {
+        return this.lastAnswer === this.session.correctAnswer;
     }
 }
