@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 
 import { getErrorMessage } from 'utils/error';
 import { getCookie, setCookie, clearCookie } from 'utils/cookies';
@@ -13,13 +13,12 @@ const COOKIE_PLAYER_NICKNAME = 'nickname';
 const COOKIE_PLAYER_ID = 'playerId';
 
 export default class App extends LightningElement {
-    @track nickname;
-    @track session;
-    @track errorMessage;
-    @track playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
-    @track showFooter = false;
-    @track lastAnswer;
-
+    nickname;
+    session;
+    errorMessage;
+    playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
+    showFooter = false;
+    lastAnswer;
     playerId;
     pingTimeout;
     ws;

@@ -1,4 +1,4 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import { getErrorMessage } from 'utils/error';
 
 import { isNicknameAvailable, registerPlayer } from 'services/player';
@@ -6,12 +6,12 @@ import { isNicknameAvailable, registerPlayer } from 'services/player';
 const VALIDATION_DELAY = 500;
 
 export default class RegistrationForm extends LightningElement {
-    @track isNickNameValid = true;
-    @track nickname = '';
-    @track cleanNickname;
-    @track isLoading = false;
-    @track isRegistering = false;
-    @track errorMessage = '';
+    isNickNameValid = true;
+    nickname = '';
+    cleanNickname;
+    isLoading = false;
+    isRegistering = false;
+    errorMessage = '';
 
     validationDelayTimeout;
 
