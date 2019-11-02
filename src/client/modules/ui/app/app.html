@@ -54,6 +54,9 @@
                             You answered
                             <span data-answer={lastAnswer}>{lastAnswer}</span>
                         </h1>
+                        <template if:true={isCorrectAnswer}>
+                            <h1>Well done, that's correct!</h1>
+                        </template>
                     </template>
                     <template if:false={lastAnswer}>
                         <h1>
@@ -68,15 +71,11 @@
                             >
                         </h1>
                     </template>
-                    <template if:true={isCorrectAnswer}>
-                        <h1>Well done, that's correct!</h1>
-                    </template>
                 </template>
 
                 <!-- Game Results -->
                 <template if:true={isGameResultsPhase}>
-                    <h1>Game over. Collecting results...</h1>
-                    <ui-spinner></ui-spinner>
+                    <ui-player-stats player-id={playerId}></ui-player-stats>
                 </template>
             </template>
         </template>

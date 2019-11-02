@@ -1,0 +1,30 @@
+<template>
+    <template if:true={error}>
+        <p class="large">{error}</p>
+    </template>
+
+    <template if:false={error}>
+        <template if:true={playerStats}>
+            <div class="container">
+                <p class="centered">
+                    <span class="playerName">{playerStats.name}</span>
+                </p>
+                <p>
+                    Ranked&nbsp; #<span class="large">{playerStats.rank}</span>
+                </p>
+                <p>
+                    with&nbsp;
+                    <span class="large">{playerStats.score}</span>&nbsp;points.
+                </p>
+                <p>
+                    <span class="large">✔</span>&nbsp;{playerStats.correctCount}
+                    correct
+                </p>
+                <p>
+                    <span class="large">✖</span>&nbsp;{playerStats.wrongCount}
+                    incorrect
+                </p>
+            </div>
+        </template>
+    </template>
+</template>
