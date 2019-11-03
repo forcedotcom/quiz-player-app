@@ -1,0 +1,20 @@
+:host {
+    font-size: 1.5rem;
+}
+.container {
+    margin: auto;
+    width: fit-content;
+}
+.centered {
+    text-align: center;
+}
+.playerName,
+.large {
+    font-size: 2rem;
+}
+.playerName {
+    color: black;
+    background: white;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+}

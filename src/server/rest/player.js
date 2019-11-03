@@ -82,4 +82,25 @@ module.exports = class PlayerRestResource {
             }
         });
     }
+
+    getPlayerStats(request, response) {
+        const { playerId } = request.params;
+        if (!playerId) {
+            response
+                .status(400)
+                .json({ message: 'Missing playerId parameter.' });
+            return;
+        }
+
+        this.sfdc.apex.get(
+            `/quiz/player/stats?id=${playerId}`,
+            (error, result) => {
+                if (error) {
+                    response.status(500).json({ message: error.message });
+                } else {
+                    response.send(result);
+                }
+            }
+        );
+    }
 };

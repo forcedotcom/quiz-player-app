@@ -147,6 +147,8 @@ export default class App extends LightningElement {
     }
 
     get isCorrectAnswer() {
-        return this.lastAnswer === this.session.correctAnswer;
+        return (
+            this.lastAnswer && this.lastAnswer === this.session.correctAnswer
+        );
     }
 }
