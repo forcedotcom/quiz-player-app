@@ -5,7 +5,7 @@
 Click on this button and follow the instructions to deploy the app:
 
 <p align="center">
-  <a href="https://heroku.com/deploy">
+  <a href="https://heroku.com/deploy?template=https://github.com/pozil/quiz-lwc-oss/edit/master">
     <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
   </a>
 <p>
