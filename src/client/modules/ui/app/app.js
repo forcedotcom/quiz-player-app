@@ -61,6 +61,10 @@ export default class App extends LightningElement {
         });
     }
 
+    disconnectedCallback() {
+        this.ws.close();
+    }
+
     handleWsMessage(message) {
         this.errorMessage = undefined;
         if (message.type === 'phaseChangeEvent') {
