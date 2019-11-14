@@ -11,6 +11,7 @@ import { submitAnswer } from 'services/answer';
 
 const COOKIE_PLAYER_NICKNAME = 'nickname';
 const COOKIE_PLAYER_ID = 'playerId';
+const COOKIE_ANSWER = 'answer';
 
 export default class App extends LightningElement {
     nickname;
@@ -19,6 +20,7 @@ export default class App extends LightningElement {
     playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
     showFooter = false;
     lastAnswer;
+    answerSaved;
     playerId;
     pingTimeout;
     ws;
@@ -27,6 +29,9 @@ export default class App extends LightningElement {
     getCurrentSession({ error, data }) {
         if (data) {
             this.session = data;
+            if (!(this.isQuestionPhase || this.isQuestionResultsPhase)) {
+                clearCookie(COOKIE_ANSWER);
+            }
         } else if (error) {
             if (error.status && error.status === 404) {
                 this.resetGame();
@@ -41,6 +46,8 @@ export default class App extends LightningElement {
         if (playerId) {
             this.setPlayer(playerId);
         }
+        this.lastAnswer = getCookie(COOKIE_ANSWER);
+        this.answerSaved = false;
 
         // Get WebSocket URL
         const wsUrl =
@@ -65,7 +72,9 @@ export default class App extends LightningElement {
                     break;
                 case PHASES.QUESTION:
                     // Clear last answer
+                    clearCookie(COOKIE_ANSWER);
                     this.lastAnswer = undefined;
+                    this.answerSaved = false;
                     break;
                 case PHASES.QUESTION_RESULTS:
                     // Refresh leaderboard
@@ -88,15 +97,21 @@ export default class App extends LightningElement {
     handleAnswer(event) {
         this.errorMessage = undefined;
         const { answer } = event.detail;
+        setCookie(COOKIE_ANSWER, answer);
         this.lastAnswer = answer;
-        submitAnswer(answer).catch(error => {
-            this.errorMessage = getErrorMessage(error);
-        });
+        submitAnswer(answer)
+            .then(() => {
+                this.answerSaved = true;
+            })
+            .catch(error => {
+                this.errorMessage = getErrorMessage(error);
+            });
     }
 
     resetGame() {
         clearCookie(COOKIE_PLAYER_NICKNAME);
         clearCookie(COOKIE_PLAYER_ID);
+        clearCookie(COOKIE_ANSWER);
         window.location.reload();
     }
 
