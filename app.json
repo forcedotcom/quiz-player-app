@@ -24,6 +24,11 @@
             "description": "Salesforce security token",
             "value": "",
             "required": true
+        },
+        "QUIZ_API_KEY": {
+            "description": "Quiz API key",
+            "value": "",
+            "required": true
         }
     },
     "success_url": "/"
