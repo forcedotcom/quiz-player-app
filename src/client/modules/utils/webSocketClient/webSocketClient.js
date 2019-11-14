@@ -46,7 +46,8 @@ export class WebSocketClient {
         // eslint-disable-next-line @lwc/lwc/no-async-operation
         this.pingTimeout = setTimeout(() => {
             this.ws.close();
-            console.warn('WS connection closed after timeout');
+            console.warn('WS connection closed after timeout. Reconnecting.');
+            this.connect();
         }, 30000 + 1000);
     }
 }
