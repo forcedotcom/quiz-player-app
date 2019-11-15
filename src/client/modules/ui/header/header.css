@@ -12,6 +12,7 @@ header {
 }
 header img {
     height: 3rem;
+    margin-right: 1rem;
 }
 h2 {
     font-weight: 300;
