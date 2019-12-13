@@ -1,9 +1,10 @@
 {
-    "name": "quiz",
-    "description": "A Quiz app built on the Salesforce Platform",
+    "name": "quiz-player-app",
+    "description": "Multiplayer quiz app built on Salesforce technology (player app)",
     "version": "0.0.0",
+    "private": true,
     "author": "pozil",
-    "bugs": "https://github.com/pozil/quiz/issues",
+    "bugs": "https://github.com/pozil/quiz-player-app/issues",
     "dependencies": {
         "dotenv": "^8.2.0",
         "jsforce": "^1.9.2",
@@ -18,7 +19,7 @@
     "engines": {
         "node": ">=10.0.0"
     },
-    "homepage": "https://github.com/pozil/quiz",
+    "homepage": "https://github.com/pozil/quiz-player-app",
     "husky": {
         "hooks": {
             "pre-commit": "lint-staged"

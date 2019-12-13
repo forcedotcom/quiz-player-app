@@ -1,8 +1,8 @@
 {
-    "name": "LWC OSS Quiz App",
-    "description": "Quiz App built on Lightning Web Components Open Source.",
-    "repository": "https://github.com/pozil/quiz-lwc-oss",
-    "logo": "https://github.com/pozil/quiz-lwc-oss/raw/master/src/client/resources/app-logo.svg",
+    "name": "Quiz Player App",
+    "description": "Multiplayer quiz app built on Salesforce technology (player app)",
+    "repository": "https://github.com/pozil/quiz-player-app",
+    "logo": "https://github.com/pozil/quiz-player-app/raw/master/src/client/resources/logo.png",
     "keywords": ["lightning", "salesforce", "web-components", "open source"],
     "env": {
         "SF_LOGIN_URL": {
