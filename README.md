@@ -1,4 +1,6 @@
-# Quiz App built on Lightning Web Components Open Source.
+# Multiplayer quiz app built on Salesforce technology (player app)
+
+ℹ️ Please refer to the [quiz host app](https://github.com/pozil/quiz-host-app) for documentation.
 
 ## Heroku deploy (recommended)
 
@@ -10,7 +12,7 @@ Click on this button and follow the instructions to deploy the app:
   </a>
 <p>
 
-## Local setup
+## Local setup (development only)
 
 Create a `.env` file at the root of the project:
 
