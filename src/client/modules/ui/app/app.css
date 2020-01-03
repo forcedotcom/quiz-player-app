@@ -39,3 +39,11 @@ span[data-answer='C'] {
 span[data-answer='D'] {
     background-color: #04844b;
 }
+
+.credits {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.credits a {
+    color: #515e7f;
+}
