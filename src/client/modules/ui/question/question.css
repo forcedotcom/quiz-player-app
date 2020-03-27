@@ -46,11 +46,12 @@
     background-color: #04844b;
 }
 
-.answer.letter {
+.answer .letter {
     font-size: xx-large;
     font-weight: bold;
+    margin-bottom: 0.5rem;
 }
-.answer.label {
+.answer .label {
     font-size: large;
     font-weight: bold;
 }
