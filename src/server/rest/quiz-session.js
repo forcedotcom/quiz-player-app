@@ -64,8 +64,21 @@ module.exports = class QuizSessionRestResource {
             }
         };
 
+        // Get question label when phase is Question
+        if (phase === 'Question') {
+            this.getQuestionLabel()
+                .then(question => {
+                    phaseChangeEvent.data.question = question;
+                    this.wss.broadcast(phaseChangeEvent);
+                    response.sendStatus(200);
+                })
+                .catch(error => {
+                    console.error('getQuestionLabel', error);
+                    response.status(500).json(error);
+                });
+        }
         // Send correct answer when phase is QuestionResults
-        if (phase === 'QuestionResults') {
+        else if (phase === 'QuestionResults') {
             this.getCorrectAnwer()
                 .then(correctAnswer => {
                     phaseChangeEvent.data.correctAnswer = correctAnswer;
@@ -73,7 +86,7 @@ module.exports = class QuizSessionRestResource {
                     response.sendStatus(200);
                 })
                 .catch(error => {
-                    console.error('updateSession', error);
+                    console.error('getCorrectAnwer', error);
                     response.status(500).json(error);
                 });
         } else {
@@ -100,6 +113,27 @@ module.exports = class QuizSessionRestResource {
                     resolve(
                         result.records[0].Current_Question__r.Correct_Answer__c
                     );
+                }
+            });
+        });
+    }
+
+    /**
+     * Gets the current question's label
+     * @returns {Promise<String>} Promise holding the question label
+     */
+    getQuestionLabel() {
+        return new Promise((resolve, reject) => {
+            const soql = `SELECT Current_Question__r.Label__c FROM Quiz_Session__c`;
+            this.sfdc.query(soql, (error, result) => {
+                if (error) {
+                    reject(error);
+                } else if (result.records.length !== 1) {
+                    reject({
+                        message: 'Could not retrieve Quiz Session record.'
+                    });
+                } else {
+                    resolve(result.records[0].Current_Question__r.Label__c);
                 }
             });
         });
