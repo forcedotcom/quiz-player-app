@@ -58,7 +58,7 @@ export default class App extends LightningElement {
         // Connect WebSocket
         this.ws = new WebSocketClient(wsUrl);
         this.ws.connect();
-        this.ws.addMessageListener(message => {
+        this.ws.addMessageListener((message) => {
             this.handleWsMessage(message);
         });
     }
@@ -109,7 +109,7 @@ export default class App extends LightningElement {
             .then(() => {
                 this.answerSaved = true;
             })
-            .catch(error => {
+            .catch((error) => {
                 this.errorMessage = getErrorMessage(error);
             });
     }
@@ -128,11 +128,11 @@ export default class App extends LightningElement {
 
     updateLeaderboard() {
         getPlayerLeaderboard({ playerId: this.playerId })
-            .then(data => {
+            .then((data) => {
                 this.playerLeaderboard = data;
                 this.showFooter = true;
             })
-            .catch(error => {
+            .catch((error) => {
                 this.showFooter = false;
                 if (error.status && error.status === 404) {
                     this.resetGame();

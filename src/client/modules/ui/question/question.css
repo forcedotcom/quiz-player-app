@@ -6,7 +6,7 @@
     flex-direction: column;
 }
 
-.label {
+.question-label {
     font-size: 1.5rem;
     margin: 1rem 1rem 0;
 }
@@ -24,10 +24,8 @@
 
 .answer button {
     width: 100%;
-    font-weight: bold;
     border-radius: 0.5rem;
     border-width: 0;
-    font-size: xx-large;
     color: #ffffff;
     margin: 1rem;
 }
@@ -46,4 +44,13 @@
 
 .answer button[data-answer='D'] {
     background-color: #04844b;
+}
+
+.answer.letter {
+    font-size: xx-large;
+    font-weight: bold;
+}
+.answer.label {
+    font-size: large;
+    font-weight: bold;
 }

@@ -1,17 +1,29 @@
 <template>
-    <div class="label">{label}</div>
+    <div class="question-label">{question.label}</div>
     <div class="answers">
         <div class="answer">
-            <button onclick={handleAnswerClick} data-answer="A">A</button>
+            <button onclick={handleAnswerClick} data-answer="A">
+                <span class="letter">A</span>
+                <span class="label">{question.answerA}</span>
+            </button>
         </div>
         <div class="answer">
-            <button onclick={handleAnswerClick} data-answer="B">B</button>
+            <button onclick={handleAnswerClick} data-answer="B">
+                <span class="letter">B</span>
+                <span class="label">{question.answerB}</span>
+            </button>
         </div>
         <div class="answer">
-            <button onclick={handleAnswerClick} data-answer="C">C</button>
+            <button onclick={handleAnswerClick} data-answer="C">
+                <span class="letter">C</span>
+                <span class="label">{question.answerC}</span>
+            </button>
         </div>
         <div class="answer">
-            <button onclick={handleAnswerClick} data-answer="D">D</button>
+            <button onclick={handleAnswerClick} data-answer="D">
+                <span class="letter">D</span>
+                <span class="label">{question.answerD}</span>
+            </button>
         </div>
     </div>
 </template>

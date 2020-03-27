@@ -18,7 +18,7 @@ const setCookie = (cname, cvalue) => {
  * @param  {String} cname  The name of the cookie to retrieve.
  * @returns {String} cookie value or an empty string if cookie is not found
  */
-const getCookie = cname => {
+const getCookie = (cname) => {
     const name = `${cname}=`;
     const ca = document.cookie.split(';');
     for (let i = 0; i < ca.length; i++) {
@@ -37,11 +37,11 @@ const getCookie = cname => {
  * Clear cookie
  * @param {String} cname The name of the cookie to retrieve.
  */
-const clearCookie = cname => {
+const clearCookie = (cname) => {
     const pathBits = window.location.pathname.split('/');
     let pathCurrent = ' path=';
     document.cookie = cname + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT;';
-    pathBits.forEach(pathBit => {
+    pathBits.forEach((pathBit) => {
         pathCurrent += (pathCurrent.substr(-1) !== '/' ? '/' : '') + pathBit;
         document.cookie =
             cname +

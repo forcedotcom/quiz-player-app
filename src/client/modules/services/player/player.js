@@ -10,8 +10,8 @@ const PLAYERS_REST_URL = '/api/players';
 export function isNicknameAvailable(config) {
     return new Promise((resolve, reject) => {
         const observer = {
-            next: data => resolve(data),
-            error: error => reject(error)
+            next: (data) => resolve(data),
+            error: (error) => reject(error)
         };
         getNicknameData(config, observer);
     });
@@ -24,8 +24,8 @@ export function isNicknameAvailable(config) {
 export function getPlayerLeaderboard(config) {
     return new Promise((resolve, reject) => {
         const observer = {
-            next: data => resolve(data),
-            error: error => reject(error)
+            next: (data) => resolve(data),
+            error: (error) => reject(error)
         };
         getPlayerLeaderboardData(config, observer);
     });
@@ -38,8 +38,8 @@ export function getPlayerLeaderboard(config) {
 export function getPlayerStats(config) {
     return new Promise((resolve, reject) => {
         const observer = {
-            next: data => resolve(data),
-            error: error => reject(error)
+            next: (data) => resolve(data),
+            error: (error) => reject(error)
         };
         getPlayerStatsData(config, observer);
     });
@@ -76,10 +76,10 @@ function getNicknameData(config, observer) {
         }
     })
         .then(fetchJson)
-        .then(jsonResponse => {
+        .then((jsonResponse) => {
             observer.next(jsonResponse);
         })
-        .catch(error => {
+        .catch((error) => {
             observer.error(error);
         });
 }
@@ -98,10 +98,10 @@ function getPlayerLeaderboardData(config, observer) {
         }
     })
         .then(fetchJson)
-        .then(jsonResponse => {
+        .then((jsonResponse) => {
             observer.next(jsonResponse);
         })
-        .catch(error => {
+        .catch((error) => {
             observer.error(error);
         });
 }
@@ -115,32 +115,32 @@ function getPlayerStatsData(config, observer) {
     // Call players API to get player's stats
     fetch(`${PLAYERS_REST_URL}/${playerId}/stats`)
         .then(fetchJson)
-        .then(jsonResponse => {
+        .then((jsonResponse) => {
             observer.next(jsonResponse);
         })
-        .catch(error => {
+        .catch((error) => {
             observer.error(error);
         });
 }
 
-register(isNicknameAvailable, eventTarget => {
+register(isNicknameAvailable, (eventTarget) => {
     let config;
     eventTarget.dispatchEvent(
         new ValueChangedEvent({ data: undefined, error: undefined })
     );
 
     const observer = {
-        next: data =>
+        next: (data) =>
             eventTarget.dispatchEvent(
                 new ValueChangedEvent({ data, error: undefined })
             ),
-        error: error =>
+        error: (error) =>
             eventTarget.dispatchEvent(
                 new ValueChangedEvent({ data: undefined, error })
             )
     };
 
-    eventTarget.addEventListener('config', newConfig => {
+    eventTarget.addEventListener('config', (newConfig) => {
         config = newConfig;
         getNicknameData(config, observer);
     });
@@ -150,24 +150,24 @@ register(isNicknameAvailable, eventTarget => {
     });
 });
 
-register(getPlayerLeaderboard, eventTarget => {
+register(getPlayerLeaderboard, (eventTarget) => {
     let config;
     eventTarget.dispatchEvent(
         new ValueChangedEvent({ data: undefined, error: undefined })
     );
 
     const observer = {
-        next: data =>
+        next: (data) =>
             eventTarget.dispatchEvent(
                 new ValueChangedEvent({ data, error: undefined })
             ),
-        error: error =>
+        error: (error) =>
             eventTarget.dispatchEvent(
                 new ValueChangedEvent({ data: undefined, error })
             )
     };
 
-    eventTarget.addEventListener('config', newConfig => {
+    eventTarget.addEventListener('config', (newConfig) => {
         config = newConfig;
         getPlayerLeaderboardData(config, observer);
     });
@@ -177,24 +177,24 @@ register(getPlayerLeaderboard, eventTarget => {
     });
 });
 
-register(getPlayerStats, eventTarget => {
+register(getPlayerStats, (eventTarget) => {
     let config;
     eventTarget.dispatchEvent(
         new ValueChangedEvent({ data: undefined, error: undefined })
     );
 
     const observer = {
-        next: data =>
+        next: (data) =>
             eventTarget.dispatchEvent(
                 new ValueChangedEvent({ data, error: undefined })
             ),
-        error: error =>
+        error: (error) =>
             eventTarget.dispatchEvent(
                 new ValueChangedEvent({ data: undefined, error })
             )
     };
 
-    eventTarget.addEventListener('config', newConfig => {
+    eventTarget.addEventListener('config', (newConfig) => {
         config = newConfig;
         getPlayerStatsData(config, observer);
     });

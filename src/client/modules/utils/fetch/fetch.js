@@ -3,13 +3,13 @@
  * @param {*} response
  * @returns {Promise<*>} Promise holding JSON parsed data or null if response holds no JSON
  */
-const fetchJson = response => {
+const fetchJson = (response) => {
     return new Promise((resolve, reject) => {
         if (
             response.headers.get('Content-Type') ===
             'application/json; charset=utf-8'
         ) {
-            response.json().then(json => {
+            response.json().then((json) => {
                 if (!response.ok) {
                     if (!json) {
                         json = {};

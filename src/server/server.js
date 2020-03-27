@@ -32,7 +32,7 @@ const sfdc = new jsforce.Connection({
 sfdc.login(
     Configuration.getSfUsername(),
     Configuration.getSfSecuredPassword(),
-    error => {
+    (error) => {
         if (error) {
             console.error('Failed to connect to Salesforce org');
             console.error(error);

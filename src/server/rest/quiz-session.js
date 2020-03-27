@@ -66,26 +66,26 @@ module.exports = class QuizSessionRestResource {
 
         // Get question label when phase is Question
         if (phase === 'Question') {
-            this.getQuestionLabel()
-                .then(question => {
+            this.getQuestion()
+                .then((question) => {
                     phaseChangeEvent.data.question = question;
                     this.wss.broadcast(phaseChangeEvent);
                     response.sendStatus(200);
                 })
-                .catch(error => {
-                    console.error('getQuestionLabel', error);
+                .catch((error) => {
+                    console.error('getQuestion', error);
                     response.status(500).json(error);
                 });
         }
         // Send correct answer when phase is QuestionResults
         else if (phase === 'QuestionResults') {
             this.getCorrectAnwer()
-                .then(correctAnswer => {
+                .then((correctAnswer) => {
                     phaseChangeEvent.data.correctAnswer = correctAnswer;
                     this.wss.broadcast(phaseChangeEvent);
                     response.sendStatus(200);
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error('getCorrectAnwer', error);
                     response.status(500).json(error);
                 });
@@ -122,7 +122,7 @@ module.exports = class QuizSessionRestResource {
      * Gets the current question's label
      * @returns {Promise<String>} Promise holding the question label
      */
-    getQuestionLabel() {
+    getQuestion() {
         return new Promise((resolve, reject) => {
             const soql = `SELECT Current_Question__r.Label__c FROM Quiz_Session__c`;
             this.sfdc.query(soql, (error, result) => {
@@ -133,7 +133,16 @@ module.exports = class QuizSessionRestResource {
                         message: 'Could not retrieve Quiz Session record.'
                     });
                 } else {
-                    resolve(result.records[0].Current_Question__r.Label__c);
+                    const questionRecord =
+                        result.records[0].Current_Question__r;
+                    const question = {
+                        label: questionRecord.Label__c,
+                        answerA: questionRecord.Answer_A__c,
+                        answerB: questionRecord.Answer_B__c,
+                        answerC: questionRecord.Answer_C__c,
+                        answerD: questionRecord.Answer_D__c
+                    };
+                    resolve(question);
                 }
             });
         });
