@@ -3,6 +3,18 @@
     display: flex;
     flex-wrap: wrap;
     flex-grow: 1;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 1.5rem;
+    margin: 1rem 1rem 0;
+}
+
+.answers {
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
 }
 
 .answer {

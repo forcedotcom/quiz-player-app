@@ -33,7 +33,10 @@
                 <template if:true={isQuestionPhase}>
                     <!-- Not yet answered -->
                     <template if:false={lastAnswer}>
-                        <ui-question onanswer={handleAnswer}></ui-question>
+                        <ui-question
+                            label={session.question}
+                            onanswer={handleAnswer}
+                        ></ui-question>
                     </template>
 
                     <!-- Answered -->
