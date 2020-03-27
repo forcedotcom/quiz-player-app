@@ -124,7 +124,12 @@ module.exports = class QuizSessionRestResource {
      */
     getQuestion() {
         return new Promise((resolve, reject) => {
-            const soql = `SELECT Current_Question__r.Label__c FROM Quiz_Session__c`;
+            const soql = `SELECT Current_Question__r.Label__c, 
+            Current_Question__r.Answer_A__c, 
+            Current_Question__r.Answer_B__c, 
+            Current_Question__r.Answer_C__c, 
+            Current_Question__r.Answer_D__c 
+            FROM Quiz_Session__c`;
             this.sfdc.query(soql, (error, result) => {
                 if (error) {
                     reject(error);
