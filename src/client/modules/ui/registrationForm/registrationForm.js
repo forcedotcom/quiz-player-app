@@ -66,7 +66,7 @@ export default class RegistrationForm extends LightningElement {
         this.isRegistering = true;
         const nickname = this.nickname.trim();
         registerPlayer(nickname)
-            .then(result => {
+            .then((result) => {
                 this.dispatchEvent(
                     new CustomEvent('registered', {
                         detail: {
@@ -76,7 +76,7 @@ export default class RegistrationForm extends LightningElement {
                     })
                 );
             })
-            .catch(error => {
+            .catch((error) => {
                 this.isLoading = false;
                 this.isRegistering = false;
                 this.displayError(error);

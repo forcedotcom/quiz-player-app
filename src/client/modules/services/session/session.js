@@ -12,8 +12,8 @@ export const PHASES = Object.freeze({
 export function getCurrentSession(config) {
     return new Promise((resolve, reject) => {
         const observer = {
-            next: data => resolve(data),
-            error: error => reject(error)
+            next: (data) => resolve(data),
+            error: (error) => reject(error)
         };
         getData(config, observer);
     });
@@ -27,32 +27,32 @@ function getData(config, observer) {
         }
     })
         .then(fetchJson)
-        .then(jsonResponse => {
+        .then((jsonResponse) => {
             observer.next(jsonResponse);
         })
-        .catch(error => {
+        .catch((error) => {
             observer.error(error);
         });
 }
 
-register(getCurrentSession, eventTarget => {
+register(getCurrentSession, (eventTarget) => {
     let config;
     eventTarget.dispatchEvent(
         new ValueChangedEvent({ data: undefined, error: undefined })
     );
 
     const observer = {
-        next: data =>
+        next: (data) =>
             eventTarget.dispatchEvent(
                 new ValueChangedEvent({ data, error: undefined })
             ),
-        error: error =>
+        error: (error) =>
             eventTarget.dispatchEvent(
                 new ValueChangedEvent({ data: undefined, error })
             )
     };
 
-    eventTarget.addEventListener('config', newConfig => {
+    eventTarget.addEventListener('config', (newConfig) => {
         config = newConfig;
         getData(config, observer);
     });

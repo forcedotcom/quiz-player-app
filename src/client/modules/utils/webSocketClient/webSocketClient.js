@@ -14,20 +14,20 @@ export class WebSocketClient {
         });
 
         // Listen for messages while filtering ping messages
-        this.ws.addEventListener('message', event => {
+        this.ws.addEventListener('message', (event) => {
             const eventData = JSON.parse(event.data);
             if (eventData.type === 'ping') {
                 this.ws.send('{ "type" : "pong" }');
                 this.heartbeat();
             } else {
-                this.messageListeners.forEach(listener => {
+                this.messageListeners.forEach((listener) => {
                     listener(eventData);
                 });
             }
         });
 
         // Listen for errors
-        this.ws.addEventListener('error', event => {
+        this.ws.addEventListener('error', (event) => {
             console.error('WS error', event);
         });
 

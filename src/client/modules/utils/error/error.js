@@ -2,19 +2,19 @@
  * Extract a single error message from an error array
  * @param {Array|Object} errors single error or array of errors
  */
-const getErrorMessage = errors => {
+const getErrorMessage = (errors) => {
     if (!Array.isArray(errors)) {
         errors = [errors];
     }
 
     return (
         errors
-            .filter(error => !!error)
+            .filter((error) => !!error)
             // Extract an error message
-            .map(error => {
+            .map((error) => {
                 // UI API read errors
                 if (Array.isArray(error.body)) {
-                    return error.body.map(e => e.message);
+                    return error.body.map((e) => e.message);
                 }
                 // UI API DML, Apex and network errors
                 else if (error.body && typeof error.body.message === 'string') {
@@ -30,7 +30,7 @@ const getErrorMessage = errors => {
             // Flatten
             .reduce((prev, curr) => prev.concat(curr), [])
             // Remove empty strings
-            .filter(message => !!message)
+            .filter((message) => !!message)
     );
 };
 
