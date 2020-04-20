@@ -1,6 +1,21 @@
 <template>
     <form onsubmit={handleSubmit} autocomplete="off">
         <div>
+            <div>
+                <label for="socialHandle"
+                    >Enter any of your social handle</label
+                >
+                <div class="input-with-icons">
+                    <input
+                        id="socialHandle"
+                        value={socialHandle}
+                        oninput={handleSocialHandleChange}
+                        readonly={isRegistering}
+                        autocomplete="off"
+                    />
+                </div>
+            </div>
+            <br />
             <div class={nicknameFormElementClass}>
                 <label for="nickname">Pick a nickname</label>
                 <div class="input-with-icons">

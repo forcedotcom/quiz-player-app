@@ -27,7 +27,7 @@ module.exports = class PlayerRestResource {
     }
 
     registerPlayer(request, response) {
-        const { nickname } = request.body;
+        const { nickname, socialHandle } = request.body;
         if (!nickname) {
             response
                 .status(400)
@@ -37,28 +37,33 @@ module.exports = class PlayerRestResource {
 
         this.sfdc
             .sobject('Quiz_Player__c')
-            .insert({ Name: nickname }, (error, result) => {
-                if (error || !result.success) {
-                    if (
-                        error.errorCode &&
-                        error.fields &&
-                        error.errorCode ===
-                            'FIELD_CUSTOM_VALIDATION_EXCEPTION' &&
-                        error.fields.includes('Name')
-                    ) {
-                        response.status(409).json({
-                            message: `Nickname '${nickname}' is already in use.`
-                        });
+            .insert(
+                { Name: nickname, Social_Handle__c: socialHandle },
+                (error, result) => {
+                    if (error || !result.success) {
+                        if (
+                            error.errorCode &&
+                            error.fields &&
+                            error.errorCode ===
+                                'FIELD_CUSTOM_VALIDATION_EXCEPTION' &&
+                            error.fields.includes('Name')
+                        ) {
+                            response.status(409).json({
+                                message: `Nickname '${nickname}' is already in use.`
+                            });
+                        } else {
+                            console.error('registerPlayer ', error);
+                            response
+                                .status(500)
+                                .json({
+                                    message: 'Failed to register player.'
+                                });
+                        }
                     } else {
-                        console.error('registerPlayer ', error);
-                        response
-                            .status(500)
-                            .json({ message: 'Failed to register player.' });
+                        response.json(result);
                     }
-                } else {
-                    response.json(result);
                 }
-            });
+            );
     }
 
     getPlayerLeaderboard(request, response) {
