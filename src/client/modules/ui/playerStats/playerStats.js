@@ -7,7 +7,7 @@ export default class Winner extends LightningElement {
     playerStats;
     error;
     isTop5 = false;
-    encodedString = '';
+    emailHyperlink = '';
 
     @wire(getPlayerStats, { playerId: '$playerId' })
     wiredPlayer({ error, data }) {
@@ -15,7 +15,9 @@ export default class Winner extends LightningElement {
             this.playerStats = data;
             if (this.playerStats.rank <= 5) {
                 this.isTop5 = true;
-                this.encodedString = encodeURIComponent(
+                this.emailHyperlink =
+                    'mailto:jerry.thomas@salesforce.com?subject=Cert%20Voucher%20for%20LevelUpSFDev&body=';
+                this.emailHyperlink += encodeURIComponent(
                     `My name is ${this.playerStats.name} and my unique code is ${this.playerStats.playerUniqueId}`
                 );
             }
