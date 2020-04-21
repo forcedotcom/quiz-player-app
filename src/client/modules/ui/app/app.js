@@ -167,6 +167,10 @@ export default class App extends LightningElement {
         return this.session.phase === PHASES.GAME_RESULTS;
     }
 
+    get isGameResultsPhaseForFooter() {
+        return this.session && this.session.phase === PHASES.GAME_RESULTS;
+    }
+
     get isCorrectAnswer() {
         return (
             this.lastAnswer && this.lastAnswer === this.session.correctAnswer
