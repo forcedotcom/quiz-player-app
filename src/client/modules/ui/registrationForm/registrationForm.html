@@ -19,21 +19,6 @@
                 </div>
                 <div class="error">{errorMessage}</div>
             </div>
-            <br />
-            <div>
-                <label for="socialHandle"
-                    >Enter your Twitter or Facebook ID</label
-                >
-                <div class="input-with-icons">
-                    <input
-                        id="socialHandle"
-                        value={socialHandle}
-                        oninput={handleSocialHandleChange}
-                        readonly={isRegistering}
-                        autocomplete="off"
-                    />
-                </div>
-            </div>
         </div>
         <div class="form-footer">
             <template if:true={isLoading}>

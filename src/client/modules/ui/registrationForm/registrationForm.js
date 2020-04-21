@@ -12,7 +12,6 @@ export default class RegistrationForm extends LightningElement {
     isLoading = false;
     isRegistering = false;
     errorMessage = '';
-    socialHandle = '';
 
     validationDelayTimeout;
 
@@ -29,10 +28,6 @@ export default class RegistrationForm extends LightningElement {
             this.isLoading = false;
             this.displayError(error);
         }
-    }
-
-    handleSocialHandleChange(event) {
-        this.socialHandle = event.target.value;
     }
 
     handleNicknameChange(event) {
@@ -70,8 +65,7 @@ export default class RegistrationForm extends LightningElement {
         this.isLoading = true;
         this.isRegistering = true;
         const nickname = this.nickname.trim();
-        const socialHandle = this.socialHandle.trim();
-        registerPlayer(nickname, socialHandle)
+        registerPlayer(nickname)
             .then((result) => {
                 this.dispatchEvent(
                     new CustomEvent('registered', {
@@ -98,7 +92,6 @@ export default class RegistrationForm extends LightningElement {
 
     get isRegistrationDisabled() {
         return (
-            this.socialHandle.trim() === '' ||
             this.nickname.trim() === '' ||
             !this.isNickNameValid ||
             this.isLoading

@@ -52,6 +52,7 @@
         "test:unit:debug": "lwc-services test:unit --debug",
         "test:unit:watch": "lwc-services test:unit --watch",
         "preinstall": "rm -fr src/client/resources/dist",
-        "postinstall": "mkdir -p src/client/resources/dist && cp node_modules/normalize.css/normalize.css src/client/resources/dist/."
+        "postinstall": "mkdir -p src/client/resources/dist && cp node_modules/normalize.css/normalize.css src/client/resources/dist/.",
+        "watch": "lwc-services watch"
     }
 }

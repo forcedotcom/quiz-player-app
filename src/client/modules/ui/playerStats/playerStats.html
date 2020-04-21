@@ -25,6 +25,29 @@
                     incorrect
                 </p>
             </div>
+            <template if:true={isTop5}>
+                <br />
+                <div class="centered">
+                    CONGRATULATIONS on making it to the Top 5!
+                    <br /><br />
+                    <div class="uniqueCode">
+                        Send the code
+                        <br />
+                        <b
+                            ><span class="large"
+                                >{playerStats.playerUniqueId}</span
+                            ></b
+                        >
+                        <br />
+                        to
+                        <a
+                            href="mailto:jerry.thomas@salesforce.com?subject=Cert%20Voucher%20for%20LevelUpSFDev&body={encodedString}"
+                            >jerry.thomas@salesforce.com</a
+                        >
+                        <br />to receive your certification voucher
+                    </div>
+                </div>
+            </template>
         </template>
     </template>
 </template>
