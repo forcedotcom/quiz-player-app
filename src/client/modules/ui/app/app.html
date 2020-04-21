@@ -104,17 +104,21 @@
     </div>
     <!-- End body -->
 
-    <!-- Footer with score and rank -->
-    <template if:true={showFooter}>
-        <ui-footer leaderboard={playerLeaderboard}></ui-footer>
+    <template if:false={isGameResultsPhase}>
+        <!-- Footer with score and rank -->
+        <template if:true={showFooter}>
+            <ui-footer leaderboard={playerLeaderboard}></ui-footer>
+        </template>
+        <!-- Credits -->
+        <template if:false={showFooter}>
+            <div class="credits">
+                Quiz App by
+                <a href="https://twitter.com/PhilippeOzil">@PhilippeOzil</a>
+                &nbsp;-&nbsp;Player app v{PLAYER_APP_VERSION}&nbsp;-&nbsp;
+                <a href="https://github.com/pozil/quiz-host-app"
+                    >Help, issues and feedback</a
+                >
+            </div>
+        </template>
     </template>
-    <!-- Credits -->
-    <div if:false={showFooter} class="credits">
-        Quiz App by
-        <a href="https://twitter.com/PhilippeOzil">@PhilippeOzil</a>
-        &nbsp;-&nbsp;Player app v{PLAYER_APP_VERSION}&nbsp;-&nbsp;
-        <a href="https://github.com/pozil/quiz-host-app"
-            >Help, issues and feedback</a
-        >
-    </div>
 </template>
