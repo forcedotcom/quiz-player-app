@@ -24,4 +24,11 @@ module.exports = class Configuration {
     static getQuizApiKey() {
         return process.env.QUIZ_API_KEY;
     }
+
+    static shouldCollectPlayerEmails() {
+        const value = process.env.COLLECT_PLAYER_EMAILS
+            ? process.env.COLLECT_PLAYER_EMAILS.toUpperCase()
+            : null;
+        return value === 'TRUE';
+    }
 };

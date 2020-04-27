@@ -2,7 +2,7 @@
     <form onsubmit={handleSubmit} autocomplete="off">
         <div>
             <div class={nicknameFormElementClass}>
-                <label for="nickname">Pick a nickname</label>
+                <label for="nickname">Nickname</label>
                 <div class="input-with-icons">
                     <input
                         id="nickname"
@@ -17,6 +17,16 @@
                         <use xlink:href={validationIconHref}></use>
                     </svg>
                 </div>
+                <template if:true={shouldCollectPlayerEmails}>
+                    <label for="email">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        value={email}
+                        oninput={handleEmailChange}
+                        readonly={isRegistering}
+                    />
+                </template>
                 <div class="error">{errorMessage}</div>
             </div>
         </div>

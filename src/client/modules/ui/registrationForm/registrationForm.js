@@ -1,19 +1,31 @@
 import { LightningElement, wire } from 'lwc';
 import { getErrorMessage } from 'utils/error';
 
+import { getConfiguration } from 'services/configuration';
 import { isNicknameAvailable, registerPlayer } from 'services/player';
 
 const VALIDATION_DELAY = 500;
 
 export default class RegistrationForm extends LightningElement {
+    configuration;
     isNickNameValid = true;
     nickname = '';
+    email = '';
     cleanNickname;
     isLoading = false;
     isRegistering = false;
     errorMessage = '';
 
     validationDelayTimeout;
+
+    @wire(getConfiguration)
+    getConfiguration({ error, data }) {
+        if (data) {
+            this.configuration = data;
+        } else if (error) {
+            this.errorMessage = getErrorMessage(error);
+        }
+    }
 
     @wire(isNicknameAvailable, { nickname: '$cleanNickname' })
     isNicknameAvailable({ error, data }) {
@@ -53,6 +65,10 @@ export default class RegistrationForm extends LightningElement {
         this.validationDelayTimeout = setTimeout(() => {
             this.cleanNickname = cleanNickname;
         }, VALIDATION_DELAY);
+    }
+
+    handleEmailChange(event) {
+        this.email = event.target.value;
     }
 
     handleSubmit(event) {
@@ -122,5 +138,11 @@ export default class RegistrationForm extends LightningElement {
         return `/resources/slds-icons-action.svg${
             this.isNickNameValid ? '#approval' : '#close'
         }`;
+    }
+
+    get shouldCollectPlayerEmails() {
+        return (
+            this.configuration && this.configuration.shouldCollectPlayerEmails
+        );
     }
 }

@@ -29,6 +29,10 @@
             "description": "Quiz API key",
             "value": "",
             "required": true
+        },
+        "COLLECT_PLAYER_EMAILS": {
+            "description": "Whether app should collect player emails (true/false)",
+            "value": "true"
         }
     },
     "success_url": "/"
