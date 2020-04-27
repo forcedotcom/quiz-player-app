@@ -1,4 +1,4 @@
-const Configuration = require('./utils/configuration.js');
+const Configuration = require('../utils/configuration.js');
 
 module.exports = class ConfigurationRestResource {
     /**
