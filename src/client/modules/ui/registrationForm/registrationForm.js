@@ -52,6 +52,8 @@ export default class RegistrationForm extends LightningElement {
     }
 
     handleNicknameChange(event) {
+        console.log(JSON.stringify(event, null, 2));
+
         clearTimeout(this.validationDelayTimeout);
         this.isLoading = false;
         this.nicknameError = null;
@@ -77,6 +79,8 @@ export default class RegistrationForm extends LightningElement {
     }
 
     handleEmailChange(event) {
+        console.log(JSON.stringify(event, null, 2));
+
         this.email = event.detail.value;
         this.emailError = null;
         this.isEmailValid = EMAIL_REGEX.text(this.email);

@@ -19,7 +19,7 @@ export default class Input extends LightningElement {
     _value = '';
     isDirty = false;
 
-    handleValueChange(event) {
+    handleInput(event) {
         this.isDirty = true;
         this._value = event.target.value;
         this.dispatchEvent(
@@ -36,9 +36,7 @@ export default class Input extends LightningElement {
             if (this.isValid) {
                 return 'has-success';
             }
-            if (this.isValid === false) {
-                return 'has-error';
-            }
+            return 'has-error';
         }
         return '';
     }
