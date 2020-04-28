@@ -56,7 +56,7 @@ export default class RegistrationForm extends LightningElement {
         this.isLoading = false;
         this.nicknameError = null;
 
-        this.nickname = event.target.value;
+        this.nickname = event.detail.value;
         const cleanNickname = this.nickname.trim().toLowerCase();
 
         // Don't validate blank nicknames
@@ -77,7 +77,7 @@ export default class RegistrationForm extends LightningElement {
     }
 
     handleEmailChange(event) {
-        this.email = event.target.value;
+        this.email = event.detail.value;
         this.emailError = null;
         this.isEmailValid = EMAIL_REGEX.text(this.email);
         if (!this.isEmailValid) {
