@@ -75,19 +75,16 @@ export default class RegistrationForm extends LightningElement {
     }
 
     handleEmailChange(event) {
-        const { value } = event.detail;
-        this.email = value;
+        this.email = event.detail.value;
         this.emailError = null;
-        if (value.trim() === '') {
+        if (this.email.trim() === '') {
             this.isEmailValid = false;
             this.emailError = 'Email is required';
         } else {
-            console.log(value);
             this.isEmailValid = new RegExp(
                 /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/,
                 'i'
-            ).test(value);
-            console.log(this.isEmailValid);
+            ).test(this.email);
             if (this.isEmailValid === false) {
                 this.emailError = 'Invalid email format';
             }
