@@ -14,13 +14,15 @@ export default class RegistrationForm extends LightningElement {
     nickname = '';
     cleanNickname;
     isNicknameValid;
+    nicknameError;
 
     email = '';
     isEmailValid;
+    emailError;
 
     isLoading = false;
     isRegistering = false;
-    errorMessage = '';
+    formError = '';
 
     validationDelayTimeout;
 
@@ -29,7 +31,7 @@ export default class RegistrationForm extends LightningElement {
         if (data) {
             this.configuration = data;
         } else if (error) {
-            this.errorMessage = getErrorMessage(error);
+            this.formError = getErrorMessage(error);
         }
     }
 
@@ -40,22 +42,21 @@ export default class RegistrationForm extends LightningElement {
             this.isLoading = false;
             this.isNicknameValid = isAvailable;
             if (!isAvailable) {
-                this.errorMessage = `Nickname '${nickname}' is already in use.`;
+                this.nicknameError = `Nickname '${nickname}' is already in use.`;
             }
         } else if (error) {
             this.isLoading = false;
-            this.displayError(error);
+            this.isNicknameValid = false;
+            this.nicknameError = getErrorMessage(error);
         }
     }
 
     handleNicknameChange(event) {
-        const inputElement = event.target;
-
         clearTimeout(this.validationDelayTimeout);
         this.isLoading = false;
-        inputElement.errorMessage = '';
+        this.nicknameError = null;
 
-        this.nickname = inputElement.value;
+        this.nickname = event.target.value;
         const cleanNickname = this.nickname.trim().toLowerCase();
 
         // Don't validate blank nicknames
@@ -77,7 +78,11 @@ export default class RegistrationForm extends LightningElement {
 
     handleEmailChange(event) {
         this.email = event.target.value;
+        this.emailError = null;
         this.isEmailValid = EMAIL_REGEX.text(this.email);
+        if (!this.isEmailValid) {
+            this.emailError = 'Invalid email format';
+        }
     }
 
     handleSubmit(event) {
@@ -104,13 +109,9 @@ export default class RegistrationForm extends LightningElement {
             .catch((error) => {
                 this.isLoading = false;
                 this.isRegistering = false;
-                this.displayError(error);
+                this.isNicknameValid = false;
+                this.formError = getErrorMessage(error);
             });
-    }
-
-    displayError(errors) {
-        this.isNickNameValid = false;
-        this.errorMessage = getErrorMessage(errors);
     }
 
     // UI expressions
@@ -118,7 +119,8 @@ export default class RegistrationForm extends LightningElement {
     get isRegistrationDisabled() {
         return (
             this.nickname.trim() === '' ||
-            !this.isNickNameValid ||
+            !this.isNicknameValid ||
+            (this.shouldCollectPlayerEmails && !this.isEmailValid) ||
             this.isLoading
         );
     }
