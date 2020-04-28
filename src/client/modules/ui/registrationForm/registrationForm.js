@@ -6,8 +6,6 @@ import { isNicknameAvailable, registerPlayer } from 'services/player';
 
 const VALIDATION_DELAY = 500;
 
-const EMAIL_REGEX = new RegExp(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/, 'gi');
-
 export default class RegistrationForm extends LightningElement {
     configuration;
 
@@ -85,7 +83,10 @@ export default class RegistrationForm extends LightningElement {
             this.emailError = 'Email is required';
         } else {
             console.log(value);
-            this.isEmailValid = EMAIL_REGEX.test(value);
+            this.isEmailValid = new RegExp(
+                /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/,
+                'i'
+            ).test(value);
             console.log(this.isEmailValid);
             if (this.isEmailValid === false) {
                 this.emailError = 'Invalid email format';
