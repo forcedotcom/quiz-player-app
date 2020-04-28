@@ -1,0 +1,21 @@
+<template>
+    <div class={formElementClass}>
+        <label for="input">{label}</label>
+        <div class="input-with-icons">
+            <input
+                id="input"
+                maxlength="20"
+                value={_value}
+                oninput={handleValueChange}
+                readonly={readonly}
+                autocomplete={autocomplete}
+                maxlength={maxLength}
+            />
+            <!-- Validation icon -->
+            <svg if:true={isDirty} class="icon" aria-hidden="true">
+                <use xlink:href={validationIconHref}></use>
+            </svg>
+        </div>
+        <div class="error">{errorMessage}</div>
+    </div>
+</template>

@@ -1,34 +1,23 @@
 <template>
     <form onsubmit={handleSubmit} autocomplete="off">
         <div>
-            <div class={nicknameFormElementClass}>
-                <label for="nickname">Nickname</label>
-                <div class="input-with-icons">
-                    <input
-                        id="nickname"
-                        maxlength="20"
-                        value={nickname}
-                        oninput={handleNicknameChange}
-                        readonly={isRegistering}
-                        autocomplete="off"
-                    />
-                    <!-- Validation icon -->
-                    <svg class={validationIconClass} aria-hidden="true">
-                        <use xlink:href={validationIconHref}></use>
-                    </svg>
-                </div>
-                <template if:true={shouldCollectPlayerEmails}>
-                    <label for="email">Email</label>
-                    <input
-                        id="email"
-                        type="email"
-                        value={email}
-                        oninput={handleEmailChange}
-                        readonly={isRegistering}
-                    />
-                </template>
-                <div class="error">{errorMessage}</div>
-            </div>
+            <text-input
+                label="Nickname"
+                onchange={handleNicknameChange}
+                readonly={isRegistering}
+                is-valid={isNicknameValid}
+                max-length="20"
+                autocomplete="nickname"
+            >
+            </text-input>
+            <text-input
+                label="Email"
+                onchange={handleEmailChange}
+                readonly={isRegistering}
+                is-valid={isEmailValid}
+                autocomplete="email"
+            >
+            </text-input>
         </div>
         <div class="form-footer">
             <template if:true={isLoading}>
