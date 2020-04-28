@@ -100,7 +100,7 @@ export default class RegistrationForm extends LightningElement {
         this.isLoading = true;
         this.isRegistering = true;
         const nickname = this.nickname.trim();
-        registerPlayer(nickname)
+        registerPlayer(nickname, this.email)
             .then((result) => {
                 this.dispatchEvent(
                     new CustomEvent('registered', {

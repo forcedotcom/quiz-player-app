@@ -48,16 +48,18 @@ export function getPlayerStats(config) {
 /**
  * Registers a player
  * @param {string} nickname
+ * @param {string} email
  * @returns {Promise<*>} Promise holding the Player record
  */
-export function registerPlayer(nickname) {
+export function registerPlayer(nickname, email) {
+    const userInfo = { nickname, email };
     return fetch(PLAYERS_REST_URL, {
         method: 'post',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ nickname })
+        body: JSON.stringify(userInfo)
     }).then(fetchJson);
 }
 
