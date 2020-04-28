@@ -19,6 +19,11 @@ export default class Input extends LightningElement {
     _value = '';
     isDirty = false;
 
+    handleChange(event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     handleInput(event) {
         this.isDirty = true;
         this._value = event.target.value;
