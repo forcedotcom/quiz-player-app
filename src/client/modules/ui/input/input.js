@@ -6,7 +6,7 @@ export default class Input extends LightningElement {
     @api readonly;
     @api isValid;
     @api maxLength;
-    @api errorMessage;
+    @api error;
 
     @api
     set value(newValue) {

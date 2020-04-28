@@ -6,7 +6,10 @@ import { isNicknameAvailable, registerPlayer } from 'services/player';
 
 const VALIDATION_DELAY = 500;
 
-const EMAIL_REGEX = new RegExp('[^.]+@[^.]+\\.[^.]+', 'g');
+const EMAIL_REGEX = new RegExp(
+    '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}',
+    'g'
+);
 
 export default class RegistrationForm extends LightningElement {
     configuration;
