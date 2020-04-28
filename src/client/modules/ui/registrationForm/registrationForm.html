@@ -1,7 +1,7 @@
 <template>
     <form onsubmit={handleSubmit} autocomplete="off">
         <div>
-            <text-input
+            <ui-input
                 label="Nickname"
                 onchange={handleNicknameChange}
                 readonly={isRegistering}
@@ -9,15 +9,15 @@
                 max-length="20"
                 autocomplete="nickname"
             >
-            </text-input>
-            <text-input
+            </ui-input>
+            <ui-input
                 label="Email"
                 onchange={handleEmailChange}
                 readonly={isRegistering}
                 is-valid={isEmailValid}
                 autocomplete="email"
             >
-            </text-input>
+            </ui-input>
         </div>
         <div class="form-footer">
             <template if:true={isLoading}>
