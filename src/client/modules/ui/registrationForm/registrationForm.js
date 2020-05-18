@@ -1,46 +1,65 @@
 import { LightningElement, wire } from 'lwc';
 import { getErrorMessage } from 'utils/error';
 
+import { getConfiguration } from 'services/configuration';
 import { isNicknameAvailable, registerPlayer } from 'services/player';
 
 const VALIDATION_DELAY = 500;
 
 export default class RegistrationForm extends LightningElement {
-    isNickNameValid = true;
+    configuration;
+
     nickname = '';
     cleanNickname;
+    isNicknameValid;
+    nicknameError;
+
+    email = '';
+    isEmailValid;
+    emailError;
+
     isLoading = false;
     isRegistering = false;
-    errorMessage = '';
+    formError = '';
 
     validationDelayTimeout;
+
+    @wire(getConfiguration)
+    getConfiguration({ error, data }) {
+        if (data) {
+            this.configuration = data;
+        } else if (error) {
+            this.formError = getErrorMessage(error);
+        }
+    }
 
     @wire(isNicknameAvailable, { nickname: '$cleanNickname' })
     isNicknameAvailable({ error, data }) {
         if (data) {
             const { nickname, isAvailable } = data;
             this.isLoading = false;
-            this.isNickNameValid = isAvailable;
+            this.isNicknameValid = isAvailable;
             if (!isAvailable) {
-                this.errorMessage = `Nickname '${nickname}' is already in use.`;
+                this.nicknameError = `Nickname '${nickname}' is already in use.`;
             }
         } else if (error) {
             this.isLoading = false;
-            this.displayError(error);
+            this.isNicknameValid = false;
+            this.nicknameError = getErrorMessage(error);
         }
     }
 
     handleNicknameChange(event) {
         clearTimeout(this.validationDelayTimeout);
         this.isLoading = false;
-        this.errorMessage = '';
+        this.nicknameError = null;
 
-        this.nickname = event.target.value;
+        this.nickname = event.detail.value;
         const cleanNickname = this.nickname.trim().toLowerCase();
 
         // Don't validate blank nicknames
         if (cleanNickname === '') {
-            this.isNickNameValid = true;
+            this.isNicknameValid = false;
             return;
         }
         // Don't validate if clean nickname did not change
@@ -55,6 +74,23 @@ export default class RegistrationForm extends LightningElement {
         }, VALIDATION_DELAY);
     }
 
+    handleEmailChange(event) {
+        this.email = event.detail.value;
+        this.emailError = null;
+        if (this.email.trim() === '') {
+            this.isEmailValid = false;
+            this.emailError = 'Email is required';
+        } else {
+            this.isEmailValid = new RegExp(
+                /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/,
+                'i'
+            ).test(this.email);
+            if (this.isEmailValid === false) {
+                this.emailError = 'Invalid email format';
+            }
+        }
+    }
+
     handleSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -65,7 +101,7 @@ export default class RegistrationForm extends LightningElement {
         this.isLoading = true;
         this.isRegistering = true;
         const nickname = this.nickname.trim();
-        registerPlayer(nickname)
+        registerPlayer(nickname, this.email)
             .then((result) => {
                 this.dispatchEvent(
                     new CustomEvent('registered', {
@@ -79,13 +115,9 @@ export default class RegistrationForm extends LightningElement {
             .catch((error) => {
                 this.isLoading = false;
                 this.isRegistering = false;
-                this.displayError(error);
+                this.isNicknameValid = false;
+                this.formError = getErrorMessage(error);
             });
-    }
-
-    displayError(errors) {
-        this.isNickNameValid = false;
-        this.errorMessage = getErrorMessage(errors);
     }
 
     // UI expressions
@@ -93,34 +125,15 @@ export default class RegistrationForm extends LightningElement {
     get isRegistrationDisabled() {
         return (
             this.nickname.trim() === '' ||
-            !this.isNickNameValid ||
+            !this.isNicknameValid ||
+            (this.shouldCollectPlayerEmails && !this.isEmailValid) ||
             this.isLoading
         );
     }
 
-    get nicknameFormElementClass() {
-        if (this.nickname === '' || (this.isLoading && !this.isRegistering)) {
-            return '';
-        }
-        if (this.isNickNameValid) {
-            return 'has-success';
-        }
-        if (!this.isNickNameValid) {
-            return 'has-error';
-        }
-        return '';
-    }
-
-    get validationIconClass() {
-        return (this.isLoading && !this.isRegistering) ||
-            this.nickname.trim() === ''
-            ? 'invisible icon'
-            : 'icon';
-    }
-
-    get validationIconHref() {
-        return `/resources/slds-icons-action.svg${
-            this.isNickNameValid ? '#approval' : '#close'
-        }`;
+    get shouldCollectPlayerEmails() {
+        return (
+            this.configuration && this.configuration.shouldCollectPlayerEmails
+        );
     }
 }

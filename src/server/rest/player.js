@@ -27,7 +27,7 @@ module.exports = class PlayerRestResource {
     }
 
     registerPlayer(request, response) {
-        const { nickname } = request.body;
+        const { nickname, email } = request.body;
         if (!nickname) {
             response
                 .status(400)
@@ -37,7 +37,7 @@ module.exports = class PlayerRestResource {
 
         this.sfdc
             .sobject('Quiz_Player__c')
-            .insert({ Name: nickname }, (error, result) => {
+            .insert({ Name: nickname, Email__c: email }, (error, result) => {
                 if (error || !result.success) {
                     if (
                         error.errorCode &&
