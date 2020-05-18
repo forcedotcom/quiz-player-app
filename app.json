@@ -32,7 +32,7 @@
         },
         "COLLECT_PLAYER_EMAILS": {
             "description": "Whether app should collect player emails (true/false)",
-            "value": "true"
+            "value": "false"
         }
     },
     "success_url": "/"
