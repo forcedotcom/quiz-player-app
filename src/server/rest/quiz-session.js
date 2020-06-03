@@ -16,7 +16,8 @@ module.exports = class QuizSessionRestResource {
      * @param {*} response
      */
     getSession(request, response) {
-        const soql = `SELECT Phase__c FROM Quiz_Session__c`;
+        const ns = Configuration.getSfNamespacePrefix();
+        const soql = `SELECT ${ns}Phase__c FROM ${ns}Quiz_Session__c`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('getSession', error);
@@ -27,7 +28,8 @@ module.exports = class QuizSessionRestResource {
                 response.status(404).json({ message });
             } else {
                 const record = result.records[0];
-                response.json({ phase: record.Phase__c });
+                const phase = record[`${ns}Phase__c`];
+                response.json({ phase });
             }
         });
     }
@@ -49,7 +51,8 @@ module.exports = class QuizSessionRestResource {
             return;
         }
         // Check parameters
-        const phase = request.body.Phase__c;
+        const ns = Configuration.getSfNamespacePrefix();
+        const phase = request.body[`${ns}Phase__c`];
         if (!phase) {
             response
                 .status(400)
@@ -101,7 +104,8 @@ module.exports = class QuizSessionRestResource {
      */
     getCorrectAnwer() {
         return new Promise((resolve, reject) => {
-            const soql = `SELECT Current_Question__r.Correct_Answer__c FROM Quiz_Session__c`;
+            const ns = Configuration.getSfNamespacePrefix();
+            const soql = `SELECT ${ns}Current_Question__r.${ns}Correct_Answer__c FROM ${ns}Quiz_Session__c`;
             this.sfdc.query(soql, (error, result) => {
                 if (error) {
                     reject(error);
@@ -111,7 +115,9 @@ module.exports = class QuizSessionRestResource {
                     });
                 } else {
                     resolve(
-                        result.records[0].Current_Question__r.Correct_Answer__c
+                        result.records[0][`${ns}Current_Question__r`][
+                            `${ns}Correct_Answer__c`
+                        ]
                     );
                 }
             });
@@ -124,12 +130,13 @@ module.exports = class QuizSessionRestResource {
      */
     getQuestion() {
         return new Promise((resolve, reject) => {
-            const soql = `SELECT Current_Question__r.Label__c, 
-            Current_Question__r.Answer_A__c, 
-            Current_Question__r.Answer_B__c, 
-            Current_Question__r.Answer_C__c, 
-            Current_Question__r.Answer_D__c 
-            FROM Quiz_Session__c`;
+            const ns = Configuration.getSfNamespacePrefix();
+            const soql = `SELECT ${ns}Current_Question__r.${ns}Label__c, 
+            ${ns}Current_Question__r.${ns}Answer_A__c, 
+            ${ns}Current_Question__r.${ns}Answer_B__c, 
+            ${ns}Current_Question__r.${ns}Answer_C__c, 
+            ${ns}Current_Question__r.${ns}Answer_D__c 
+            FROM ${ns}Quiz_Session__c`;
             this.sfdc.query(soql, (error, result) => {
                 if (error) {
                     reject(error);
@@ -139,13 +146,13 @@ module.exports = class QuizSessionRestResource {
                     });
                 } else {
                     const questionRecord =
-                        result.records[0].Current_Question__r;
+                        result.records[0][`${ns}Current_Question__r`];
                     const question = {
-                        label: questionRecord.Label__c,
-                        answerA: questionRecord.Answer_A__c,
-                        answerB: questionRecord.Answer_B__c,
-                        answerC: questionRecord.Answer_C__c,
-                        answerD: questionRecord.Answer_D__c
+                        label: questionRecord[`${ns}Label__c`],
+                        answerA: questionRecord[`${ns}Answer_A__c`],
+                        answerB: questionRecord[`${ns}Answer_B__c`],
+                        answerC: questionRecord[`${ns}Answer_C__c`],
+                        answerD: questionRecord[`${ns}Answer_D__c`]
                     };
                     resolve(question);
                 }

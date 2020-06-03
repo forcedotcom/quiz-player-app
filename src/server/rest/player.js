@@ -1,3 +1,5 @@
+const Configuration = require('../utils/configuration.js');
+
 module.exports = class PlayerRestResource {
     constructor(sfdc) {
         this.sfdc = sfdc;
@@ -12,7 +14,8 @@ module.exports = class PlayerRestResource {
             return;
         }
 
-        const soql = `SELECT Id FROM Quiz_Player__c WHERE Name='${nickname}'`;
+        const ns = Configuration.getSfNamespacePrefix();
+        const soql = `SELECT Id FROM ${ns}Quiz_Player__c WHERE Name='${nickname}'`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('isNicknameAvailable', error);
@@ -35,9 +38,13 @@ module.exports = class PlayerRestResource {
             return;
         }
 
+        const ns = Configuration.getSfNamespacePrefix();
+        const playerRecord = { Name: nickname };
+        playerRecord[`${ns}Email__c`] = email;
+
         this.sfdc
-            .sobject('Quiz_Player__c')
-            .insert({ Name: nickname, Email__c: email }, (error, result) => {
+            .sobject(`${ns}Quiz_Player__c`)
+            .insert(playerRecord, (error, result) => {
                 if (error || !result.success) {
                     if (
                         error.errorCode &&
@@ -70,7 +77,8 @@ module.exports = class PlayerRestResource {
             return;
         }
 
-        const soql = `SELECT Score__c, Ranking__c FROM Quiz_Player__c WHERE Id='${playerId}'`;
+        const ns = Configuration.getSfNamespacePrefix();
+        const soql = `SELECT ${ns}Score__c, ${ns}Ranking__c FROM ${ns}Quiz_Player__c WHERE Id='${playerId}'`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('getPlayerLeaderboard', error);

@@ -25,6 +25,10 @@
             "value": "",
             "required": true
         },
+        "SF_NAMESPACE": {
+            "description": "Salesforce package namespace (default: sfqz)",
+            "value": "sfqz"
+        },
         "QUIZ_API_KEY": {
             "description": "Quiz API key",
             "value": "",

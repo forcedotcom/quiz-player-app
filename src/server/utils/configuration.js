@@ -21,6 +21,10 @@ module.exports = class Configuration {
         return process.env.SF_PASSWORD + process.env.SF_TOKEN;
     }
 
+    static getSfNamespacePrefix() {
+        return process.env.SF_NAMESPACE ? `${process.env.SF_NAMESPACE}__` : '';
+    }
+
     static getQuizApiKey() {
         return process.env.QUIZ_API_KEY;
     }
