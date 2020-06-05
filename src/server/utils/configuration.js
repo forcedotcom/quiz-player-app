@@ -26,7 +26,7 @@ module.exports = class Configuration {
     }
 
     static getSfNamespacePath() {
-        return process.env.SF_NAMESPACE ? `${process.env.SF_NAMESPACE}/` : '';
+        return process.env.SF_NAMESPACE ? `/${process.env.SF_NAMESPACE}` : '';
     }
 
     static getQuizApiKey() {

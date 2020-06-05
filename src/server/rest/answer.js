@@ -13,7 +13,7 @@ module.exports = class AnswerRestResource {
         }
 
         const ns = Configuration.getSfNamespacePath();
-        this.sfdc.apex.post(`${ns}quiz/answers`, request.body, (error) => {
+        this.sfdc.apex.post(`${ns}/quiz/answers`, request.body, (error) => {
             if (error) {
                 response.status(500).json({ message: error.message });
             } else {
