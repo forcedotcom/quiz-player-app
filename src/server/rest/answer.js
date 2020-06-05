@@ -1,3 +1,5 @@
+const Configuration = require('../utils/configuration.js');
+
 module.exports = class AnswerRestResource {
     constructor(sfdc) {
         this.sfdc = sfdc;
@@ -10,7 +12,8 @@ module.exports = class AnswerRestResource {
             return;
         }
 
-        this.sfdc.apex.post('/quiz/answers', request.body, (error, result) => {
+        const ns = Configuration.getSfNamespacePath();
+        this.sfdc.apex.post(`${ns}quiz/answers`, request.body, (error) => {
             if (error) {
                 response.status(500).json({ message: error.message });
             } else {

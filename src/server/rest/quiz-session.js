@@ -51,8 +51,7 @@ module.exports = class QuizSessionRestResource {
             return;
         }
         // Check parameters
-        const ns = Configuration.getSfNamespacePrefix();
-        const phase = request.body[`${ns}Phase__c`];
+        const { phase } = request.body;
         if (!phase) {
             response
                 .status(400)
