@@ -13,9 +13,9 @@
         "ws": "^7.3.0"
     },
     "devDependencies": {
-        "eslint": "^6.8.0",
+        "eslint": "^7.1.0",
         "husky": "^4.2.5",
-        "lint-staged": "^10.2.2",
+        "lint-staged": "^10.2.9",
         "prettier": "^2.0.5"
     },
     "engines": {
