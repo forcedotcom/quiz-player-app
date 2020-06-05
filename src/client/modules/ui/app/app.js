@@ -17,7 +17,7 @@ export default class App extends LightningElement {
     nickname;
     session;
     errorMessage;
-    playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
+    playerLeaderboard = { score: '-', rank: '-' };
     showFooter = false;
     lastAnswer;
     answerSaved;

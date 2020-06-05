@@ -86,7 +86,12 @@ module.exports = class PlayerRestResource {
             } else if (result.records.length === 0) {
                 response.status(404).json({ message: 'Unkown player.' });
             } else {
-                response.json(result.records[0]);
+                const record = result.records[0];
+                const leaderboard = {
+                    score: record[`${ns}Score__c`],
+                    rank: record[`${ns}Ranking__c`]
+                };
+                response.json(leaderboard);
             }
         });
     }
