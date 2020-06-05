@@ -100,8 +100,9 @@ module.exports = class PlayerRestResource {
             return;
         }
 
+        const ns = Configuration.getSfNamespacePath();
         this.sfdc.apex.get(
-            `/quiz/player/stats?id=${playerId}`,
+            `${ns}/quiz/player/stats?id=${playerId}`,
             (error, result) => {
                 if (error) {
                     response.status(500).json({ message: error.message });
