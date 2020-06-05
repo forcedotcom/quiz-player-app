@@ -28,7 +28,7 @@ curl -X PUT \
   -H "Api-Key: $API_KEY" \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/json' \
-  -d "{ \"Phase__c\": \"$PHASE\" }"
+  -d "{ \"phase\": \"$PHASE\" }"
 EXIT_CODE="$?"
 
 # Check exit code

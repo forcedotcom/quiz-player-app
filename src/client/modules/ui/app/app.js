@@ -17,7 +17,7 @@ export default class App extends LightningElement {
     nickname;
     session;
     errorMessage;
-    playerLeaderboard = { Score__c: '-', Ranking__c: '-' };
+    playerLeaderboard = { score: '-', rank: '-' };
     showFooter = false;
     lastAnswer;
     answerSaved;
@@ -25,7 +25,7 @@ export default class App extends LightningElement {
     pingTimeout;
     ws;
 
-    PLAYER_APP_VERSION = '1.3.0';
+    PLAYER_APP_VERSION = '2.0.0';
 
     @wire(getCurrentSession)
     getCurrentSession({ error, data }) {
