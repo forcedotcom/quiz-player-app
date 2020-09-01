@@ -77,16 +77,12 @@
                             </template>
                         </template>
                         <template if:false={answerSaved}>
-                            <h1>
-                                You didn't answer in time.
-                            </h1>
+                            <h1>You didn't answer in time.</h1>
                         </template>
                     </template>
                     <!-- Did not answer -->
                     <template if:false={lastAnswer}>
-                        <h1>
-                            You didn't answer in time.
-                        </h1>
+                        <h1>You didn't answer in time.</h1>
                     </template>
                 </template>
 
@@ -112,7 +108,7 @@
     <div if:false={showFooter} class="credits">
         Quiz App by <a href="https://twitter.com/PhilippeOzil">@PhilippeOzil</a>
         &nbsp;-&nbsp;Player app v{PLAYER_APP_VERSION}&nbsp;-&nbsp;
-        <a href="https://github.com/pozil/quiz-host-app"
+        <a href="https://github.com/fostive/quiz-host-app"
             >Help, issues and feedback</a
         >
     </div>
