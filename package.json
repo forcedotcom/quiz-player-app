@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "private": true,
     "author": "pozil",
-    "bugs": "https://github.com/pozil/quiz-player-app/issues",
+    "bugs": "https://github.com/fostive/quiz-player-app/issues",
     "dependencies": {
         "dotenv": "^8.2.0",
         "jsforce": "^1.9.3",
@@ -13,15 +13,15 @@
         "ws": "^7.3.1"
     },
     "devDependencies": {
-        "eslint": "^7.5.0",
+        "eslint": "^7.8.0",
         "husky": "^4.2.5",
-        "lint-staged": "^10.2.11",
-        "prettier": "^2.0.5"
+        "lint-staged": "^10.2.13",
+        "prettier": "^2.1.1"
     },
     "engines": {
         "node": ">=10.0.0"
     },
-    "homepage": "https://github.com/pozil/quiz-player-app",
+    "homepage": "https://github.com/fostive/quiz-player-app",
     "husky": {
         "hooks": {
             "pre-commit": "lint-staged"
