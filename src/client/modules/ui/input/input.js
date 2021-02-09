@@ -3,7 +3,7 @@ import { LightningElement, api } from 'lwc';
 export default class Input extends LightningElement {
     @api label;
     @api autocomplete;
-    @api readonly;
+    @api readOnly;
     @api isValid;
     @api maxLength;
     @api error;

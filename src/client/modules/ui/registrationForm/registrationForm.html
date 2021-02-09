@@ -5,7 +5,7 @@
             <ui-input
                 label="Nickname"
                 onchange={handleNicknameChange}
-                readonly={isRegistering}
+                read-only={isRegistering}
                 is-valid={isNicknameValid}
                 error={nicknameError}
                 max-length="20"
@@ -16,7 +16,7 @@
                 <ui-input
                     label="Email"
                     onchange={handleEmailChange}
-                    readonly={isRegistering}
+                    read-only={isRegistering}
                     is-valid={isEmailValid}
                     error={emailError}
                     autocomplete="email"
@@ -29,9 +29,7 @@
                 <ui-spinner></ui-spinner>
             </template>
             <template if:false={isLoading}>
-                <button disabled={isRegistrationDisabled}>
-                    Register
-                </button>
+                <button disabled={isRegistrationDisabled}>Register</button>
             </template>
         </div>
     </form>
