@@ -19,7 +19,7 @@
         "prettier": "^2.2.1"
     },
     "engines": {
-        "node": ">=10.0.0"
+        "node": ">=14.0.0"
     },
     "homepage": "https://github.com/fostive/quiz-player-app",
     "husky": {
