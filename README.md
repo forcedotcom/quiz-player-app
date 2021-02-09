@@ -26,4 +26,6 @@ QUIZ_API_KEY='YOUR_QUIZ_API_KEY'
 COLLECT_PLAYER_EMAILS=false
 ```
 
+Build the project with `npm run build:development`
+
 Run the project with `npm start`
