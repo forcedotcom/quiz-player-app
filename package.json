@@ -1,33 +1,28 @@
 {
     "name": "quiz-player-app",
     "description": "Multiplayer quiz app built on Salesforce technology (player app)",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "private": true,
     "author": "pozil",
     "bugs": "https://github.com/fostive/quiz-player-app/issues",
     "dependencies": {
-        "dotenv": "^8.2.0",
+        "dotenv": "^10.0.0",
         "express": "^4.17.1",
         "jsforce": "^1.10.1",
         "normalize.css": "^8.0.1",
-        "ws": "^7.4.6"
+        "ws": "^7.5.5"
     },
     "devDependencies": {
-        "eslint": "^7.19.0",
-        "husky": "^4.3.8",
-        "lint-staged": "^10.5.4",
-        "lwc-services": "^3.0.2",
-        "prettier": "^2.2.1"
+        "eslint": "^7.32.0",
+        "husky": "^7.0.4",
+        "lint-staged": "^11.2.6",
+        "lwc-services": "^3.2.2",
+        "prettier": "^2.4.1"
     },
     "engines": {
-        "node": ">=14.0.0"
+        "node": "14.18.1"
     },
     "homepage": "https://github.com/fostive/quiz-player-app",
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
     "keywords": [
         "lwc"
     ],
@@ -53,6 +48,10 @@
         "test:unit:debug": "lwc-services test:unit --debug",
         "test:unit:watch": "lwc-services test:unit --watch",
         "preinstall": "rm -fr src/client/resources/dist",
-        "postinstall": "mkdir -p src/client/resources/dist && cp node_modules/normalize.css/normalize.css src/client/resources/dist/."
+        "postinstall": "husky install && mkdir -p src/client/resources/dist && cp node_modules/normalize.css/normalize.css src/client/resources/dist/.",
+        "precommit": "lint-staged"
+    },
+    "volta": {
+        "node": "14.18.1"
     }
 }
