@@ -71,7 +71,8 @@ function getNicknameData(config, observer) {
     }
 
     // Call players API to check if nickname is available (cache disabled)
-    fetch(`${PLAYERS_REST_URL}?nickname=${nickname}`, {
+    const searchParams = new URLSearchParams({ nickname });
+    fetch(`${PLAYERS_REST_URL}?${searchParams.toString()}`, {
         headers: {
             pragma: 'no-cache',
             'Cache-Control': 'no-cache'

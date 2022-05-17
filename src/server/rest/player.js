@@ -15,7 +15,10 @@ module.exports = class PlayerRestResource {
         }
 
         const ns = Configuration.getSfNamespacePrefix();
-        const soql = `SELECT Id FROM ${ns}Quiz_Player__c WHERE Name='${nickname}'`;
+        const soql = `SELECT Id FROM ${ns}Quiz_Player__c WHERE Name='${nickname.replace(
+            "'",
+            "\\'"
+        )}'`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('isNicknameAvailable', error);
