@@ -6,17 +6,25 @@
     "author": "pozil",
     "bugs": "https://github.com/fostive/quiz-player-app/issues",
     "dependencies": {
+        "@babel/core": "^7.18.2",
         "dotenv": "^16.0.1",
-        "express": "^4.18.1",
         "jsforce": "^1.11.0",
+        "lwc": "^2.14.1",
+        "lwr": "^0.6.5",
         "normalize.css": "^8.0.1",
         "ws": "^8.6.0"
     },
     "devDependencies": {
-        "eslint": "^7.32.0",
+        "@lwc/eslint-plugin-lwc": "^1.2.1",
+        "@lwc/jest-preset": "^11.4.0",
+        "@salesforce/eslint-config-lwc": "^3.3.0",
+        "@salesforce/eslint-plugin-lightning": "^1.0.0",
+        "eslint": "^8.17.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-jest": "^26.5.3",
         "husky": "^8.0.1",
-        "lint-staged": "^12.4.1",
-        "lwc-services": "^3.2.2",
+        "jest": "^28.1.1",
+        "lint-staged": "^13.0.1",
         "prettier": "^2.6.2"
     },
     "engines": {
@@ -37,18 +45,13 @@
     },
     "repository": "pozil/quiz",
     "scripts": {
-        "start": "node src/server/server.js",
-        "build": "lwc-services build -m production",
-        "build:development": "lwc-services build",
+        "start": "MODE=prod node src/server/server.js",
+        "dev": "node src/server/server.js",
         "lint": "eslint ./src/**/*.js",
         "prettier": "prettier --write '**/*.{css,html,js,json,md,yaml,yml}'",
         "prettier:verify": "prettier --list-different '**/*.{css,html,js,json,md,yaml,yml}'",
-        "test:unit": "lwc-services test:unit",
-        "test:unit:coverage": "lwc-services test:unit --coverage",
-        "test:unit:debug": "lwc-services test:unit --debug",
-        "test:unit:watch": "lwc-services test:unit --watch",
-        "preinstall": "rm -fr src/client/resources/dist",
-        "postinstall": "husky install && mkdir -p src/client/resources/dist && cp node_modules/normalize.css/normalize.css src/client/resources/dist/.",
+        "preinstall": "rm -fr src/client/assets/dist",
+        "postinstall": "husky install && mkdir -p src/client/assets/dist && cp node_modules/normalize.css/normalize.css src/client/assets/dist/.",
         "precommit": "lint-staged"
     },
     "volta": {

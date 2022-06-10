@@ -1,16 +1,27 @@
 module.exports = class Configuration {
     static isValid() {
-        return (
-            process.env.SF_USERNAME &&
-            process.env.SF_PASSWORD &&
-            process.env.SF_TOKEN &&
-            process.env.SF_LOGIN_URL &&
-            process.env.QUIZ_API_KEY
-        );
+        [
+            'SF_USERNAME',
+            'SF_PASSWORD',
+            'SF_TOKEN',
+            'SF_LOGIN_URL',
+            'SF_API_VERSION',
+            'QUIZ_API_KEY'
+        ].forEach((varName) => {
+            if (!process.env[varName]) {
+                console.error(`ERROR: Missing ${varName} environment variable`);
+                return false;
+            }
+        });
+        return true;
     }
 
     static getSfLoginUrl() {
         return process.env.SF_LOGIN_URL;
+    }
+
+    static getSfApiVersion() {
+        return process.env.SF_API_VERSION;
     }
 
     static getSfUsername() {
