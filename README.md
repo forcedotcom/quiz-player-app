@@ -18,6 +18,7 @@ Create a `.env` file at the root of the project:
 
 ```
 SF_LOGIN_URL='https://test.salesforce.com'
+SF_API_VERSION='55.0'
 SF_USERNAME='YOUR_SALESFORCE_USERNAME'
 SF_PASSWORD='YOUR_SALESFORCE_PASSWORD'
 SF_TOKEN='YOUR_SALESFORCE_SECURITY_TOKEN'
