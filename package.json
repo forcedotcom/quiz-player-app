@@ -1,7 +1,7 @@
 {
     "name": "quiz-player-app",
     "description": "Multiplayer quiz app built on Salesforce technology (player app)",
-    "version": "2.1.2",
+    "version": "3.0.0",
     "private": true,
     "author": "pozil",
     "bugs": "https://github.com/fostive/quiz-player-app/issues",
