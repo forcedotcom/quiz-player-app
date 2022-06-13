@@ -25,7 +25,7 @@ export default class App extends LightningElement {
     pingTimeout;
     ws;
 
-    PLAYER_APP_VERSION = '3.0.0';
+    PLAYER_APP_VERSION = '3.0.1';
 
     @wire(getCurrentSession)
     getCurrentSession({ error, data }) {
@@ -54,7 +54,8 @@ export default class App extends LightningElement {
         // Get WebSocket URL
         const wsUrl =
             (window.location.protocol === 'http:' ? 'ws://' : 'wss://') +
-            window.location.host;
+            window.location.host +
+            '/websockets';
         // Connect WebSocket
         this.ws = new WebSocketClient(wsUrl);
         this.ws.connect();

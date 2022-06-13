@@ -13,7 +13,7 @@ if (!Configuration.isValid()) {
     process.exit(-1);
 }
 
-// Configure and start express
+// Configure server
 const lwrServer = LWR.createServer();
 const app = lwrServer.getInternalServer();
 const wss = new WebSocketService();
@@ -74,10 +74,10 @@ app.get('/api/configuration', (request, response) => {
 });
 
 // HTTP and WebSocket Listen
+wss.connect(lwrServer.server);
 lwrServer
     .listen(({ port, serverMode }) => {
         console.log(`App listening on port ${port} in ${serverMode} mode\n`);
-        wss.connect(app);
     })
     .catch((err) => {
         console.error(err);

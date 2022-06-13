@@ -1,4 +1,4 @@
-const WebSocket = require('ws');
+const { WebSocket, WebSocketServer } = require('ws');
 
 const WSS_PING_INTERVAL = 29000;
 
@@ -9,11 +9,24 @@ module.exports = class WebSocketService {
 
     connect(server) {
         // Start WebSocket server
-        this.wss = new WebSocket.Server({
-            server,
-            clientTracking: true
+        this.wss = new WebSocketServer({
+            clientTracking: true,
+            path: '/websockets',
+            server
         });
-        // Listen for WS client connections
+
+        // Listen to lifecycle events
+        this.wss.on('listening', () => {
+            console.log('WebSocket server listening');
+        });
+        this.wss.on('error', (error) => {
+            console.log(`WebSocket server error: ${error}`);
+        });
+        this.wss.on('close', () => {
+            console.log('WebSocket server closed.');
+        });
+
+        // Listen for new client connections
         this.wss.on('connection', (wsClient) => {
             console.log('WS client connected');
             wsClient.isAlive = true;
@@ -23,7 +36,7 @@ module.exports = class WebSocketService {
                 if (data.type === 'pong') {
                     wsClient.isAlive = true;
                 } else {
-                    console.log('WS incomming message ', message);
+                    console.log('WS incomming message ', data);
                     this.messageListeners.forEach((listener) => {
                         listener(data);
                     });
@@ -63,10 +76,9 @@ module.exports = class WebSocketService {
             `WS broadcasting to ${this.wss.clients.size} client(s): `,
             data
         );
-        const jsonString = JSON.stringify(data);
         this.wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(jsonString, (error) => {
+                client.send(data, (error) => {
                     if (error) {
                         console.error('WS send error ', error);
                     }
