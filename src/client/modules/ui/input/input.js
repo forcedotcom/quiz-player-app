@@ -47,7 +47,7 @@ export default class Input extends LightningElement {
     }
 
     get validationIconHref() {
-        return `/resources/slds-icons-action.svg${
+        return `/assets/slds-icons-action.svg${
             this.isValid ? '#approval' : '#close'
         }`;
     }

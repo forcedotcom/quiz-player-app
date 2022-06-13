@@ -3,6 +3,7 @@ coverage/
 
 # Default build folder
 dist/
+__lwr_cache__
 
-# Default resources folder
-src/client/resources
+# Default assets folder
+src/client/assets

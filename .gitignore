@@ -14,6 +14,7 @@ logs
 node_modules
 jsconfig.json
 .vscode
+__lwr_cache__
 
 # Temp directory
 /tmp

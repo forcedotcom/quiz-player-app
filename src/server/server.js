@@ -1,34 +1,27 @@
-const express = require('express'),
-    path = require('path'),
-    jsforce = require('jsforce'),
+const jsforce = require('jsforce'),
     Configuration = require('./utils/configuration.js'),
     WebSocketService = require('./utils/webSocketService.js'),
     QuizSessionRestResource = require('./rest/quiz-session.js'),
     PlayerRestResource = require('./rest/player.js'),
     AnswerRestResource = require('./rest/answer.js'),
-    ConfigurationRestResource = require('./rest/configuration.js');
+    ConfigurationRestResource = require('./rest/configuration.js'),
+    LWR = require('lwr');
 
 // Load and check config
 require('dotenv').config();
 if (!Configuration.isValid()) {
-    console.error(
-        'Cannot start app: missing mandatory configuration. Check your .env file.'
-    );
     process.exit(-1);
 }
 
 // Configure and start express
-const DIST_DIR = path.join(__dirname, '../../dist');
-const app = express();
-app.use(express.static(DIST_DIR));
-app.use(express.json());
-
+const lwrServer = LWR.createServer();
+const app = lwrServer.getInternalServer();
 const wss = new WebSocketService();
 
 // Connect to Salesforce
 const sfdc = new jsforce.Connection({
     loginUrl: Configuration.getSfLoginUrl(),
-    version: '47.0'
+    version: Configuration.getSfApiVersion()
 });
 sfdc.login(
     Configuration.getSfUsername(),
@@ -81,6 +74,12 @@ app.get('/api/configuration', (request, response) => {
 });
 
 // HTTP and WebSocket Listen
-const PORT = process.env.PORT || 3002;
-const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-wss.connect(server);
+lwrServer
+    .listen(({ port, serverMode }) => {
+        console.log(`App listening on port ${port} in ${serverMode} mode\n`);
+        wss.connect(app);
+    })
+    .catch((err) => {
+        console.error(err);
+        process.exit(1);
+    });
