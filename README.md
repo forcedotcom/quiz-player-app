@@ -16,7 +16,7 @@ Click on this button and follow the instructions to deploy the app:
 
 Create a `.env` file at the root of the project:
 
-```
+```properties
 SF_LOGIN_URL='https://test.salesforce.com'
 SF_API_VERSION='55.0'
 SF_USERNAME='YOUR_SALESFORCE_USERNAME'
@@ -26,7 +26,5 @@ SF_NAMESPACE=''
 QUIZ_API_KEY='YOUR_QUIZ_API_KEY'
 COLLECT_PLAYER_EMAILS=false
 ```
-
-Build the project with `npm run build:development`
 
 Run the project with `npm start`
