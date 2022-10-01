@@ -1,14 +1,15 @@
 /* eslint-disable no-console */
-import { LightningElement, wire } from 'lwc';
+import { LightningElement } from 'lwc';
 
 import { getErrorMessage } from 'utils/error';
 import { getCookie, setCookie, clearCookie } from 'utils/cookies';
 import { WebSocketClient } from 'utils/webSocketClient';
 
-import { PHASES, getCurrentSession } from 'services/session';
+import { PHASES, getSession } from 'services/session';
 import { getPlayerLeaderboard } from 'services/player';
 import { submitAnswer } from 'services/answer';
 
+const COOKIE_QUIZ_SESSION_ID = 'quizSessionId';
 const COOKIE_PLAYER_NICKNAME = 'nickname';
 const COOKIE_PLAYER_ID = 'playerId';
 const COOKIE_ANSWER = 'answer';
@@ -25,24 +26,10 @@ export default class App extends LightningElement {
     pingTimeout;
     ws;
 
-    PLAYER_APP_VERSION = '3.0.1';
+    PLAYER_APP_VERSION = '4.0.0';
 
-    @wire(getCurrentSession)
-    getCurrentSession({ error, data }) {
-        if (data) {
-            this.session = data;
-            if (!(this.isQuestionPhase || this.isQuestionResultsPhase)) {
-                clearCookie(COOKIE_ANSWER);
-            }
-        } else if (error) {
-            if (error.status && error.status === 404) {
-                this.resetGame();
-            }
-            this.errorMessage = getErrorMessage(error);
-        }
-    }
-
-    connectedCallback() {
+    async connectedCallback() {
+        await this.getSession();
         this.nickname = getCookie(COOKIE_PLAYER_NICKNAME);
         const playerId = getCookie(COOKIE_PLAYER_ID);
         if (playerId) {
@@ -66,6 +53,33 @@ export default class App extends LightningElement {
 
     disconnectedCallback() {
         this.ws.close();
+    }
+
+    async getSession() {
+        try {
+            // Get session ID
+            let isSessionCookieSet = true;
+            let sessionId = getCookie(COOKIE_QUIZ_SESSION_ID);
+            if (!sessionId) {
+                isSessionCookieSet = false;
+                sessionId = new URLSearchParams(window.location.search).get(
+                    'sessionId'
+                );
+                if (!sessionId) {
+                    throw new Error('Failed to retrieve session ID');
+                }
+            }
+            // Load session data
+            this.session = await getSession(sessionId);
+            if (!isSessionCookieSet) {
+                setCookie(COOKIE_QUIZ_SESSION_ID, sessionId);
+            }
+            if (!(this.isQuestionPhase || this.isQuestionResultsPhase)) {
+                clearCookie(COOKIE_ANSWER);
+            }
+        } catch (error) {
+            this.errorMessage = getErrorMessage(error);
+        }
     }
 
     handleWsMessage(message) {
@@ -101,18 +115,17 @@ export default class App extends LightningElement {
         this.setPlayer(playerId);
     }
 
-    handleAnswer(event) {
+    async handleAnswer(event) {
         this.errorMessage = undefined;
         const { answer } = event.detail;
         setCookie(COOKIE_ANSWER, answer);
         this.lastAnswer = answer;
-        submitAnswer(answer)
-            .then(() => {
-                this.answerSaved = true;
-            })
-            .catch((error) => {
-                this.errorMessage = getErrorMessage(error);
-            });
+        try {
+            await submitAnswer(answer);
+            this.answerSaved = true;
+        } catch (error) {
+            this.errorMessage = getErrorMessage(error);
+        }
     }
 
     resetGame() {
@@ -127,19 +140,20 @@ export default class App extends LightningElement {
         this.updateLeaderboard();
     }
 
-    updateLeaderboard() {
-        getPlayerLeaderboard({ playerId: this.playerId })
-            .then((data) => {
-                this.playerLeaderboard = data;
-                this.showFooter = true;
-            })
-            .catch((error) => {
-                this.showFooter = false;
-                if (error.status && error.status === 404) {
-                    this.resetGame();
-                }
-                this.errorMessage = getErrorMessage(error);
-            });
+    async updateLeaderboard() {
+        try {
+            this.playerLeaderboard = await getPlayerLeaderboard(
+                this.session.id,
+                this.playerId
+            );
+            this.showFooter = true;
+        } catch (error) {
+            this.showFooter = false;
+            if (error.status && error.status === 404) {
+                this.resetGame();
+            }
+            this.errorMessage = getErrorMessage(error);
+        }
     }
 
     // UI expressions

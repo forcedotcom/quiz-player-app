@@ -16,8 +16,16 @@ module.exports = class QuizSessionRestResource {
      * @param {*} response
      */
     getSession(request, response) {
+        const { sessionId } = request.params;
+        if (!sessionId) {
+            response
+                .status(400)
+                .json({ message: 'Missing sessionId parameter.' });
+            return;
+        }
+
         const ns = Configuration.getSfNamespacePrefix();
-        const soql = `SELECT ${ns}Phase__c FROM ${ns}Quiz_Session__c`;
+        const soql = `SELECT Id, ${ns}Phase__c FROM ${ns}Quiz_Session__c WHERE Id='${sessionId}'`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('getSession', error);
@@ -28,8 +36,9 @@ module.exports = class QuizSessionRestResource {
                 response.status(404).json({ message });
             } else {
                 const record = result.records[0];
+                const id = record.Id;
                 const phase = record[`${ns}Phase__c`];
-                response.json({ phase });
+                response.json({ id, phase });
             }
         });
     }
@@ -51,6 +60,13 @@ module.exports = class QuizSessionRestResource {
             return;
         }
         // Check parameters
+        const { sessionId } = request.params;
+        if (!sessionId) {
+            response
+                .status(400)
+                .json({ message: 'Missing sessionId parameter.' });
+            return;
+        }
         const { phase } = request.body;
         if (!phase) {
             response
@@ -68,7 +84,7 @@ module.exports = class QuizSessionRestResource {
 
         // Get question label when phase is Question
         if (phase === 'Question') {
-            this.getQuestion()
+            this.getQuestion(sessionId)
                 .then((question) => {
                     phaseChangeEvent.data.question = question;
                     this.wss.broadcast(phaseChangeEvent);
@@ -125,9 +141,10 @@ module.exports = class QuizSessionRestResource {
 
     /**
      * Gets the current question's label
+     * @param sessionId
      * @returns {Promise<String>} Promise holding the question label
      */
-    getQuestion() {
+    getQuestion(sessionId) {
         return new Promise((resolve, reject) => {
             const ns = Configuration.getSfNamespacePrefix();
             const soql = `SELECT ${ns}Current_Question__r.${ns}Label__c, 
@@ -135,7 +152,8 @@ module.exports = class QuizSessionRestResource {
             ${ns}Current_Question__r.${ns}Answer_B__c, 
             ${ns}Current_Question__r.${ns}Answer_C__c, 
             ${ns}Current_Question__r.${ns}Answer_D__c 
-            FROM ${ns}Quiz_Session__c`;
+            FROM ${ns}Quiz_Session__c
+            WHERE Id='${sessionId}'`;
             this.sfdc.query(soql, (error, result) => {
                 if (error) {
                     reject(error);

@@ -44,27 +44,33 @@ apiServer.use(express.json());
 
 // Setup Quiz Session REST resources
 const quizSessionRest = new QuizSessionRestResource(sfdc, wss);
-apiServer.get('/quiz-sessions', (request, response) => {
+apiServer.get('/quiz-sessions/:sessionId', (request, response) => {
     quizSessionRest.getSession(request, response);
 });
-apiServer.put('/quiz-sessions', (request, response) => {
+apiServer.put('/quiz-sessions/:sessionId', (request, response) => {
     quizSessionRest.updateSession(request, response);
 });
 
 // Setup Players REST resources
 const playerRest = new PlayerRestResource(sfdc);
-apiServer.get('/players', (request, response) => {
+apiServer.get('/quiz-sessions/:sessionId/players', (request, response) => {
     playerRest.isNicknameAvailable(request, response);
 });
-apiServer.get('/players/:playerId/stats', (request, response) => {
-    playerRest.getPlayerStats(request, response);
-});
-apiServer.get('/players/:playerId/leaderboard', (request, response) => {
-    playerRest.getPlayerLeaderboard(request, response);
-});
-apiServer.post('/players', (request, response) => {
+apiServer.post('/quiz-sessions/:sessionId/players', (request, response) => {
     playerRest.registerPlayer(request, response);
 });
+apiServer.get(
+    '/quiz-sessions/:sessionId/players/:playerId/stats',
+    (request, response) => {
+        playerRest.getPlayerStats(request, response);
+    }
+);
+apiServer.get(
+    '/quiz-sessions/:sessionId/players/:playerId/leaderboard',
+    (request, response) => {
+        playerRest.getPlayerLeaderboard(request, response);
+    }
+);
 
 // Setup Answer REST resources
 const answerRest = new AnswerRestResource(sfdc);

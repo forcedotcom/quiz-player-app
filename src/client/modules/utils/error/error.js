@@ -1,23 +1,26 @@
 /**
  * Extract a single error message from an error array
- * @param {Array|Object} errors single error or array of errors
+ * @param {Array|Object} e single error or array of errors
  */
-const getErrorMessage = (errors) => {
-    if (!Array.isArray(errors)) {
-        errors = [errors];
-    }
-
+const getErrorMessage = (oneOrMoreErrors) => {
+    const errors = Array.isArray(oneOrMoreErrors)
+        ? oneOrMoreErrors
+        : [oneOrMoreErrors];
     return (
         errors
             .filter((error) => !!error)
             // Extract an error message
             .map((error) => {
+                // Basic string error
+                if (typeof error === 'string') {
+                    return error;
+                }
                 // UI API read errors
-                if (Array.isArray(error.body)) {
+                else if (Array.isArray(error?.body)) {
                     return error.body.map((e) => e.message);
                 }
                 // UI API DML, Apex and network errors
-                else if (error.body && typeof error.body.message === 'string') {
+                else if (typeof error?.body?.message === 'string') {
                     return error.body.message;
                 }
                 // JS errors

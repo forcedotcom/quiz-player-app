@@ -6,19 +6,24 @@ module.exports = class PlayerRestResource {
     }
 
     isNicknameAvailable(request, response) {
+        const { sessionId } = request.params;
         const { nickname } = request.query;
+        if (!sessionId) {
+            response
+                .status(400)
+                .json({ message: 'Missing sessionId URI parameter.' });
+            return;
+        }
         if (!nickname) {
             response
                 .status(400)
-                .json({ message: 'Missing nickname parameter.' });
+                .json({ message: 'Missing nickname query parameter.' });
             return;
         }
 
         const ns = Configuration.getSfNamespacePrefix();
-        const soql = `SELECT Id FROM ${ns}Quiz_Player__c WHERE Name='${nickname.replace(
-            "'",
-            "\\'"
-        )}'`;
+        const cleanNickname = nickname.replace("'", "\\'");
+        const soql = `SELECT Id FROM ${ns}Quiz_Player__c WHERE Name='${cleanNickname}' AND ${ns}Session__c='${sessionId}'`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('isNicknameAvailable', error);
@@ -33,17 +38,27 @@ module.exports = class PlayerRestResource {
     }
 
     registerPlayer(request, response) {
-        const { nickname, email } = request.body;
-        if (!nickname) {
+        const { sessionId } = request.params;
+        const { email, nickname } = request.body;
+        if (!sessionId) {
             response
                 .status(400)
-                .json({ message: 'Missing nickname parameter.' });
+                .json({ message: 'Missing sessionId URI parameter.' });
+            return;
+        }
+        if (!nickname) {
+            response.status(400).json({ message: 'Missing nickname in body.' });
+            return;
+        }
+        if (Configuration.shouldCollectPlayerEmails() && !email) {
+            response.status(400).json({ message: 'Missing email in body.' });
             return;
         }
 
         const ns = Configuration.getSfNamespacePrefix();
         const playerRecord = { Name: nickname };
         playerRecord[`${ns}Email__c`] = email;
+        playerRecord[`${ns}Session__c`] = sessionId;
 
         this.sfdc
             .sobject(`${ns}Quiz_Player__c`)
@@ -76,12 +91,12 @@ module.exports = class PlayerRestResource {
         if (!playerId) {
             response
                 .status(400)
-                .json({ message: 'Missing playerId parameter.' });
+                .json({ message: 'Missing playerId URI parameter.' });
             return;
         }
 
         const ns = Configuration.getSfNamespacePrefix();
-        const soql = `SELECT ${ns}Score__c, ${ns}Ranking__c FROM ${ns}Quiz_Player__c WHERE Id='${playerId}'`;
+        const soql = `SELECT ${ns}Score__c, ${ns}Ranking__c FROM ${ns}Quiz_Player__c WHERE Id='${playerId}' AND Id='${playerId}'`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('getPlayerLeaderboard', error);
@@ -104,7 +119,7 @@ module.exports = class PlayerRestResource {
         if (!playerId) {
             response
                 .status(400)
-                .json({ message: 'Missing playerId parameter.' });
+                .json({ message: 'Missing playerId URI parameter.' });
             return;
         }
 

@@ -16,11 +16,11 @@ export function submitAnswer(answer) {
         playerId,
         answer
     };
-    return fetch(ANSWERS_REST_URL, {
+    return fetchJson(ANSWERS_REST_URL, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(answerData)
-    }).then(fetchJson);
+    });
 }

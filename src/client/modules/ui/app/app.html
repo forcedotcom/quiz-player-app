@@ -5,14 +5,16 @@
         <template if:true={session}>
             <!-- Unauthenticated -->
             <template if:false={isAuthenticated}>
-                <template if:true={isRegistrationPhase}>
-                    <ui-registration-form
-                        onregistered={handleRegistered}
-                    ></ui-registration-form>
-                </template>
-                <template if:false={isRegistrationPhase}>
-                    <h1>Sorry, registrations are closed.</h1>
-                </template>
+                <!-- Registrations open -->
+                <ui-registration-form
+                    if:true={isRegistrationPhase}
+                    session-id={session.id}
+                    onregistered={handleRegistered}
+                ></ui-registration-form>
+                <!-- Registrations closed -->
+                <h1 if:false={isRegistrationPhase}>
+                    Sorry, registrations are closed.
+                </h1>
             </template>
 
             <!-- Authenticated -->
@@ -32,12 +34,11 @@
                 <!-- Question -->
                 <template if:true={isQuestionPhase}>
                     <!-- Not yet answered -->
-                    <template if:false={lastAnswer}>
-                        <ui-question
-                            question={session.question}
-                            onanswer={handleAnswer}
-                        ></ui-question>
-                    </template>
+                    <ui-question
+                        if:false={lastAnswer}
+                        question={session.question}
+                        onanswer={handleAnswer}
+                    ></ui-question>
 
                     <!-- Answered -->
                     <template if:true={lastAnswer}>
@@ -45,12 +46,14 @@
                             You answered
                             <span data-answer={lastAnswer}>{lastAnswer}</span>
                         </h1>
-                        <template if:true={answerSaved}>
-                            <h1>Collecting answers from other players...</h1>
-                        </template>
-                        <template if:false={answerSaved}>
-                            <h1>Saving answer...</h1>
-                        </template>
+
+                        <!-- Waiting for others -->
+                        <h1 if:true={answerSaved}>
+                            Collecting answers from other players...
+                        </h1>
+                        <!-- Saving answer -->
+                        <h1 if:false={answerSaved}>Saving answer...</h1>
+
                         <ui-spinner></ui-spinner>
                     </template>
                 </template>
@@ -64,46 +67,44 @@
                             <span data-answer={lastAnswer}>{lastAnswer}</span>
                         </h1>
                         <template if:true={answerSaved}>
-                            <template if:true={isCorrectAnswer}>
-                                <h1>Well done, that's correct!</h1>
-                            </template>
-                            <template if:false={isCorrectAnswer}>
-                                <h1>
-                                    The correct answer was
-                                    <span data-answer={session.correctAnswer}
-                                        >{session.correctAnswer}</span
-                                    >
-                                </h1>
-                            </template>
+                            <!-- Correct answer -->
+                            <h1 if:true={isCorrectAnswer}>
+                                Well done, that's correct!
+                            </h1>
+                            <!-- Wrong answer -->
+                            <h1 if:false={isCorrectAnswer}>
+                                The correct answer was
+                                <span data-answer={session.correctAnswer}
+                                    >{session.correctAnswer}</span
+                                >
+                            </h1>
                         </template>
-                        <template if:false={answerSaved}>
-                            <h1>You didn't answer in time.</h1>
-                        </template>
+                        <!-- Answer not saved -->
+                        <h1 if:false={answerSaved}>
+                            You didn't answer in time.
+                        </h1>
                     </template>
                     <!-- Did not answer -->
-                    <template if:false={lastAnswer}>
-                        <h1>You didn't answer in time.</h1>
-                    </template>
+                    <h1 if:false={lastAnswer}>You didn't answer in time.</h1>
                 </template>
 
                 <!-- Game Results -->
-                <template if:true={isGameResultsPhase}>
-                    <ui-player-stats player-id={playerId}></ui-player-stats>
-                </template>
+                <ui-player-stats
+                    if:true={isGameResultsPhase}
+                    session-id={session.id}
+                    player-id={playerId}
+                ></ui-player-stats>
             </template>
         </template>
 
         <!-- Errors -->
-        <template if:true={errorMessage}>
-            <h1 class="error">{errorMessage}</h1>
-        </template>
+        <h1 if:true={errorMessage} class="error">{errorMessage}</h1>
     </div>
     <!-- End body -->
 
     <!-- Footer with score and rank -->
-    <template if:true={showFooter}>
-        <ui-footer leaderboard={playerLeaderboard}></ui-footer>
-    </template>
+    <ui-footer if:true={showFooter} leaderboard={playerLeaderboard}></ui-footer>
+
     <!-- Credits -->
     <div if:false={showFooter} class="credits">
         Quiz App by <a href="https://twitter.com/PhilippeOzil">@PhilippeOzil</a>

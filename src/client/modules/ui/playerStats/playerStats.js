@@ -1,20 +1,21 @@
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import { getPlayerStats } from 'services/player';
 import { getErrorMessage } from 'utils/error';
 
-export default class Winner extends LightningElement {
+export default class PlayerStats extends LightningElement {
+    @api sessionId;
     @api playerId;
     playerStats;
     error;
 
-    @wire(getPlayerStats, { playerId: '$playerId' })
-    wiredPlayer({ error, data }) {
-        if (data) {
-            this.playerStats = data;
-            this.error = undefined;
-        } else if (error) {
+    async connectedCallback() {
+        try {
+            this.playerStats = await getPlayerStats(
+                this.sessionId,
+                this.playerId
+            );
+        } catch (error) {
             this.error = getErrorMessage(error);
-            this.playerStats = undefined;
         }
     }
 }

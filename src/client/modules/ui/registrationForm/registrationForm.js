@@ -1,12 +1,14 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { getErrorMessage } from 'utils/error';
-
 import { getConfiguration } from 'services/configuration';
-import { isNicknameAvailable, registerPlayer } from 'services/player';
+import { isNicknameAvailable } from 'services/isNicknameAvailable';
+import { registerPlayer } from 'services/player';
 
 const VALIDATION_DELAY = 500;
 
 export default class RegistrationForm extends LightningElement {
+    @api sessionId;
+
     configuration;
 
     nickname = '';
@@ -24,16 +26,10 @@ export default class RegistrationForm extends LightningElement {
 
     validationDelayTimeout;
 
-    @wire(getConfiguration)
-    getConfiguration({ error, data }) {
-        if (data) {
-            this.configuration = data;
-        } else if (error) {
-            this.formError = getErrorMessage(error);
-        }
-    }
-
-    @wire(isNicknameAvailable, { nickname: '$cleanNickname' })
+    @wire(isNicknameAvailable, {
+        sessionId: '$sessionId',
+        nickname: '$cleanNickname'
+    })
     isNicknameAvailable({ error, data }) {
         if (data) {
             const { nickname, isAvailable } = data;
@@ -46,6 +42,14 @@ export default class RegistrationForm extends LightningElement {
             this.isLoading = false;
             this.isNicknameValid = false;
             this.nicknameError = getErrorMessage(error);
+        }
+    }
+
+    async connectedCallback() {
+        try {
+            this.configuration = await getConfiguration();
+        } catch (error) {
+            this.formError = getErrorMessage(error);
         }
     }
 
@@ -91,7 +95,7 @@ export default class RegistrationForm extends LightningElement {
         }
     }
 
-    handleSubmit(event) {
+    async handleSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
         if (this.isRegistrationDisabled) {
@@ -101,23 +105,27 @@ export default class RegistrationForm extends LightningElement {
         this.isLoading = true;
         this.isRegistering = true;
         const nickname = this.nickname.trim();
-        registerPlayer(nickname, this.email)
-            .then((result) => {
-                this.dispatchEvent(
-                    new CustomEvent('registered', {
-                        detail: {
-                            nickname,
-                            playerId: result.id
-                        }
-                    })
-                );
-            })
-            .catch((error) => {
-                this.isLoading = false;
-                this.isRegistering = false;
-                this.isNicknameValid = false;
-                this.formError = getErrorMessage(error);
-            });
+
+        try {
+            const result = await registerPlayer(
+                this.sessionId,
+                nickname,
+                this.email
+            );
+            this.dispatchEvent(
+                new CustomEvent('registered', {
+                    detail: {
+                        nickname,
+                        playerId: result.id
+                    }
+                })
+            );
+        } catch (error) {
+            this.isLoading = false;
+            this.isRegistering = false;
+            this.isNicknameValid = false;
+            this.formError = getErrorMessage(error);
+        }
     }
 
     // UI expressions

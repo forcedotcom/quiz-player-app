@@ -2,7 +2,8 @@
 SCRIPT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd $SCRIPT_PATH
 
-HOST="http://0.0.0.0:3002"
+SESSION_ID="a047A00000JWNgxQAH"
+HOST="http://0.0.0.0:3000"
 
 PHASE="$1"
 if [ "$PHASE" == "" ]; then
@@ -24,7 +25,7 @@ API_KEY=$(grep API_KEY ../.env | cut -d '=' -f 2-)
 
 # Change quiz phase
 curl -X PUT \
-  $HOST/api/quiz-sessions \
+  $HOST/api/quiz-sessions/$SESSION_ID \
   -H "Api-Key: $API_KEY" \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/json' \
