@@ -15,7 +15,7 @@ module.exports = class QuizSessionRestResource {
      * @param {*} request
      * @param {*} response
      */
-    getSession(request, response) {
+    async getSession(request, response) {
         const { sessionId } = request.params;
         if (!sessionId) {
             response
@@ -23,24 +23,23 @@ module.exports = class QuizSessionRestResource {
                 .json({ message: 'Missing sessionId parameter.' });
             return;
         }
+        // Get session data
+        try {
+            const session = await this.#getSessionData(sessionId);
 
-        const ns = Configuration.getSfNamespacePrefix();
-        const soql = `SELECT Id, ${ns}Phase__c FROM ${ns}Quiz_Session__c WHERE Id='${sessionId}'`;
-        this.sfdc.query(soql, (error, result) => {
-            if (error) {
-                console.error('getSession', error);
-                response.status(500).json(error);
-            } else if (result.records.length !== 1) {
-                const message = 'Could not retrieve Quiz Session record.';
-                console.error('getSession', message);
-                response.status(404).json({ message });
-            } else {
-                const record = result.records[0];
-                const id = record.Id;
-                const phase = record[`${ns}Phase__c`];
-                response.json({ id, phase });
+            // Get question label when phase is Question
+            if (session.phase === 'Question') {
+                session.question = await this.#getQuestion(sessionId);
             }
-        });
+            // Get correct answer when phase is QuestionResults
+            else if (session.phase === 'QuestionResults') {
+                session.correctAnswer = await this.#getCorrectAnwer();
+            }
+
+            response.json(session);
+        } catch (error) {
+            response.status(500).json(error);
+        }
     }
 
     /**
@@ -81,39 +80,55 @@ module.exports = class QuizSessionRestResource {
             }
         };
 
-        // Get question label when phase is Question
-        if (phase === 'Question') {
-            try {
-                phaseChangeEvent.data.question = await this.getQuestion(
+        try {
+            // Get question label when phase is Question
+            if (phase === 'Question') {
+                phaseChangeEvent.data.question = await this.#getQuestion(
                     sessionId
                 );
-            } catch (error) {
-                console.error('getQuestion', error);
-                response.status(500).json(error);
-                return;
             }
-        }
-        // Send correct answer when phase is QuestionResults
-        else if (phase === 'QuestionResults') {
-            try {
+            // Get correct answer when phase is QuestionResults
+            else if (phase === 'QuestionResults') {
                 phaseChangeEvent.data.correctAnswer =
-                    await this.getCorrectAnwer();
-            } catch (error) {
-                console.error('getCorrectAnwer', error);
-                response.status(500).json(error);
-                return;
+                    await this.#getCorrectAnwer();
             }
+
+            // Broadcast phase change event
+            this.wss.broadcast(phaseChangeEvent);
+            response.sendStatus(200);
+        } catch (error) {
+            console.error(error);
+            response.status(500).json(error);
         }
-        // Broadcast phase change event
-        this.wss.broadcast(phaseChangeEvent);
-        response.sendStatus(200);
+    }
+
+    async #getSessionData(sessionId) {
+        return new Promise((resolve, reject) => {
+            const ns = Configuration.getSfNamespacePrefix();
+            const soql = `SELECT Id, ${ns}Phase__c FROM ${ns}Quiz_Session__c WHERE Id='${sessionId}'`;
+            this.sfdc.query(soql, (error, result) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                } else if (result.records.length !== 1) {
+                    const message = 'Could not retrieve Quiz Session record.';
+                    console.error(message);
+                    reject({ message });
+                } else {
+                    const record = result.records[0];
+                    const id = record.Id;
+                    const phase = record[`${ns}Phase__c`];
+                    resolve({ id, phase });
+                }
+            });
+        });
     }
 
     /**
      * Gets the correct answer to the current question
      * @returns {Promise<String>} Promise holding the correct answer
      */
-    getCorrectAnwer() {
+    #getCorrectAnwer() {
         return new Promise((resolve, reject) => {
             const ns = Configuration.getSfNamespacePrefix();
             const soql = `SELECT ${ns}Current_Question__r.${ns}Correct_Answer__c FROM ${ns}Quiz_Session__c`;
@@ -140,7 +155,7 @@ module.exports = class QuizSessionRestResource {
      * @param sessionId
      * @returns {Promise<String>} Promise holding the question label
      */
-    getQuestion(sessionId) {
+    #getQuestion(sessionId) {
         return new Promise((resolve, reject) => {
             const ns = Configuration.getSfNamespacePrefix();
             const soql = `SELECT ${ns}Current_Question__r.${ns}Label__c, 
