@@ -128,6 +128,7 @@ module.exports = class PlayerRestResource {
             `${ns}/quiz/player/stats?id=${playerId}`,
             (error, result) => {
                 if (error) {
+                    console.error(error);
                     response.status(500).json({ message: error.message });
                 } else {
                     response.send(result);
