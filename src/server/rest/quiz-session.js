@@ -48,7 +48,7 @@ module.exports = class QuizSessionRestResource {
      * @param {*} request
      * @param {*} response
      */
-    updateSession(request, response) {
+    async updateSession(request, response) {
         // Check API key header
         const apiKey = request.get('Api-Key');
         if (!apiKey) {
@@ -69,12 +69,11 @@ module.exports = class QuizSessionRestResource {
         }
         const { phase } = request.body;
         if (!phase) {
-            response
-                .status(400)
-                .json({ message: 'Missing Phase__c parameter.' });
+            response.status(400).json({ message: 'Missing phase parameter.' });
             return;
         }
-        // Broadcast phase change via WSS
+
+        // Prepare phase change event
         const phaseChangeEvent = {
             type: 'phaseChangeEvent',
             data: {
@@ -84,33 +83,30 @@ module.exports = class QuizSessionRestResource {
 
         // Get question label when phase is Question
         if (phase === 'Question') {
-            this.getQuestion(sessionId)
-                .then((question) => {
-                    phaseChangeEvent.data.question = question;
-                    this.wss.broadcast(phaseChangeEvent);
-                    response.sendStatus(200);
-                })
-                .catch((error) => {
-                    console.error('getQuestion', error);
-                    response.status(500).json(error);
-                });
+            try {
+                phaseChangeEvent.data.question = await this.getQuestion(
+                    sessionId
+                );
+            } catch (error) {
+                console.error('getQuestion', error);
+                response.status(500).json(error);
+                return;
+            }
         }
         // Send correct answer when phase is QuestionResults
         else if (phase === 'QuestionResults') {
-            this.getCorrectAnwer()
-                .then((correctAnswer) => {
-                    phaseChangeEvent.data.correctAnswer = correctAnswer;
-                    this.wss.broadcast(phaseChangeEvent);
-                    response.sendStatus(200);
-                })
-                .catch((error) => {
-                    console.error('getCorrectAnwer', error);
-                    response.status(500).json(error);
-                });
-        } else {
-            this.wss.broadcast(phaseChangeEvent);
-            response.sendStatus(200);
+            try {
+                phaseChangeEvent.data.correctAnswer =
+                    await this.getCorrectAnwer();
+            } catch (error) {
+                console.error('getCorrectAnwer', error);
+                response.status(500).json(error);
+                return;
+            }
         }
+        // Broadcast phase change event
+        this.wss.broadcast(phaseChangeEvent);
+        response.sendStatus(200);
     }
 
     /**
