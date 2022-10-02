@@ -2,6 +2,9 @@
     display: block;
     text-align: center;
 }
+h1 {
+    text-align: center;
+}
 .spinner {
     display: inline-block;
     width: 3rem;

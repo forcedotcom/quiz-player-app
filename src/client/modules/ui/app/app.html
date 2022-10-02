@@ -20,16 +20,16 @@
             <!-- Authenticated -->
             <template if:true={isAuthenticated}>
                 <!-- Registration -->
-                <template if:true={isRegistrationPhase}>
-                    <h1>Waiting for host to start game...</h1>
-                    <ui-spinner></ui-spinner>
-                </template>
+                <ui-spinner
+                    if:true={isRegistrationPhase}
+                    message="Waiting for host to start game..."
+                ></ui-spinner>
 
                 <!-- Pre-question -->
-                <template if:true={isPreQuestionPhase}>
-                    <h1>Wait for question...</h1>
-                    <ui-spinner></ui-spinner>
-                </template>
+                <ui-spinner
+                    if:true={isPreQuestionPhase}
+                    message="Wait for question..."
+                ></ui-spinner>
 
                 <!-- Question -->
                 <template if:true={isQuestionPhase}>
@@ -48,13 +48,15 @@
                         </h1>
 
                         <!-- Waiting for others -->
-                        <h1 if:true={answerSaved}>
-                            Collecting answers from other players...
-                        </h1>
+                        <ui-spinner
+                            if:true={answerSaved}
+                            message="Collecting answers from other players..."
+                        ></ui-spinner>
                         <!-- Saving answer -->
-                        <h1 if:false={answerSaved}>Saving answer...</h1>
-
-                        <ui-spinner></ui-spinner>
+                        <ui-spinner
+                            if:false={answerSaved}
+                            message="Saving answer..."
+                        ></ui-spinner>
                     </template>
                 </template>
 
