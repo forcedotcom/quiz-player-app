@@ -6,6 +6,7 @@
  */
 export async function fetchJson(url, options) {
     const response = await fetch(url, options);
+    let errorMessage = `Unkwown error HTTP ${response.status}`;
     if (
         response.headers.get('Content-Type') ===
         'application/json; charset=utf-8'
@@ -14,14 +15,13 @@ export async function fetchJson(url, options) {
         if (response.ok) {
             return json;
         }
-        let message = json?.message
-            ? json.message
-            : `Unkwown error HTTP ${response.status}`;
-        throw new Error(message);
+        if (json?.message) {
+            errorMessage = json.message;
+        }
     }
     // Safely handle non JSON responses
-    if (response.ok) {
+    else if (response.ok) {
         return null;
     }
-    throw new Error(`Unkwown error HTTP ${response.status}`);
+    throw new Error(errorMessage, { status: response.status });
 }
