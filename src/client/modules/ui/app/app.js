@@ -55,28 +55,25 @@ export default class App extends LightningElement {
 
     async getSession() {
         try {
-            // Get session ID
-            let isSessionCookieSet = true;
+            // Get session ID from cookie or URL
             let sessionId = getCookie(COOKIE_QUIZ_SESSION_ID);
             if (!sessionId) {
-                isSessionCookieSet = false;
                 sessionId = new URLSearchParams(window.location.search).get(
                     'sessionId'
                 );
                 if (!sessionId) {
                     throw new Error('Failed to retrieve session ID');
                 }
+                setCookie(COOKIE_QUIZ_SESSION_ID, sessionId);
             }
             // Load session data
             this.session = await getSession(sessionId);
-            if (!isSessionCookieSet) {
-                setCookie(COOKIE_QUIZ_SESSION_ID, sessionId);
-            }
             if (!(this.isQuestionPhase || this.isQuestionResultsPhase)) {
                 clearCookie(COOKIE_ANSWER);
             }
         } catch (error) {
             this.errorMessage = getErrorMessage(error);
+            clearCookie(COOKIE_QUIZ_SESSION_ID);
         }
     }
 
@@ -129,6 +126,7 @@ export default class App extends LightningElement {
     }
 
     resetGame() {
+        clearCookie(COOKIE_QUIZ_SESSION_ID);
         clearCookie(COOKIE_PLAYER_NICKNAME);
         clearCookie(COOKIE_PLAYER_ID);
         clearCookie(COOKIE_ANSWER);
@@ -137,7 +135,7 @@ export default class App extends LightningElement {
 
     async updateLeaderboard() {
         // Only load leaderboard if we have the session and player IDs
-        if (!this.session.id || !this.playerId) {
+        if (!this.session?.id || !this.playerId) {
             return;
         }
         try {
@@ -148,10 +146,11 @@ export default class App extends LightningElement {
             this.showFooter = true;
         } catch (error) {
             this.showFooter = false;
-            if (error.status && error.status === 404) {
+            this.errorMessage = getErrorMessage(error);
+            // Reset game if player is not found
+            if (error?.status === 404) {
                 this.resetGame();
             }
-            this.errorMessage = getErrorMessage(error);
         }
     }
 
