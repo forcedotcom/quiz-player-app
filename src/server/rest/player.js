@@ -96,7 +96,7 @@ module.exports = class PlayerRestResource {
         }
 
         const ns = Configuration.getSfNamespacePrefix();
-        const soql = `SELECT ${ns}Score__c, ${ns}Ranking__c FROM ${ns}Quiz_Player__c WHERE Id='${playerId}' AND Id='${playerId}'`;
+        const soql = `SELECT ${ns}Score__c, ${ns}Rank__c FROM ${ns}Quiz_Player__c WHERE Id='${playerId}' AND Id='${playerId}'`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('getPlayerLeaderboard', error);
@@ -107,7 +107,7 @@ module.exports = class PlayerRestResource {
                 const record = result.records[0];
                 const leaderboard = {
                     score: record[`${ns}Score__c`],
-                    rank: record[`${ns}Ranking__c`]
+                    rank: record[`${ns}Rank__c`]
                 };
                 response.json(leaderboard);
             }
