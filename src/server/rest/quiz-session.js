@@ -76,6 +76,7 @@ module.exports = class QuizSessionRestResource {
         const phaseChangeEvent = {
             type: 'phaseChangeEvent',
             data: {
+                id: sessionId,
                 phase
             }
         };

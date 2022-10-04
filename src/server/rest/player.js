@@ -96,7 +96,7 @@ module.exports = class PlayerRestResource {
         }
 
         const ns = Configuration.getSfNamespacePrefix();
-        const soql = `SELECT ${ns}Score__c, ${ns}Rank__c FROM ${ns}Quiz_Player__c WHERE Id='${playerId}' AND Id='${playerId}'`;
+        const soql = `SELECT ${ns}Score__c, ${ns}Rank__c FROM ${ns}Quiz_Player__c WHERE Id='${playerId}'`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('getPlayerLeaderboard', error);
