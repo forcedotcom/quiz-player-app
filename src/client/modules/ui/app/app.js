@@ -31,12 +31,10 @@ export default class App extends LightningElement {
     async connectedCallback() {
         await this.getSession();
         this.nickname = getCookie(COOKIE_PLAYER_NICKNAME);
-        const playerId = getCookie(COOKIE_PLAYER_ID);
-        if (playerId) {
-            this.setPlayer(playerId);
-        }
+        this.playerId = getCookie(COOKIE_PLAYER_ID);
         this.lastAnswer = getCookie(COOKIE_ANSWER);
         this.answerSaved = false;
+        this.updateLeaderboard();
 
         // Get WebSocket URL
         const wsUrl =
@@ -112,7 +110,9 @@ export default class App extends LightningElement {
         this.nickname = nickname;
 
         setCookie(COOKIE_PLAYER_ID, playerId);
-        this.setPlayer(playerId);
+        this.playerId = playerId;
+
+        this.updateLeaderboard();
     }
 
     async handleAnswer(event) {
@@ -135,12 +135,11 @@ export default class App extends LightningElement {
         window.location.reload();
     }
 
-    setPlayer(playerId) {
-        this.playerId = playerId;
-        this.updateLeaderboard();
-    }
-
     async updateLeaderboard() {
+        // Only load leaderboard if we have the session and player IDs
+        if (!this.session.id || !this.playerId) {
+            return;
+        }
         try {
             this.playerLeaderboard = await getPlayerLeaderboard(
                 this.session.id,
