@@ -104,7 +104,7 @@ module.exports = class QuizSessionRestResource {
     getCorrectAnwer() {
         return new Promise((resolve, reject) => {
             const ns = Configuration.getSfNamespacePrefix();
-            const soql = `SELECT ${ns}Current_Question__r.${ns}Correct_Answer__c FROM ${ns}Quiz_Session__c`;
+            const soql = `SELECT ${ns}Current_Question__r.${ns}Correct_Answer__c FROM ${ns}Quiz_Session__c WHER Status__c='Active'`;
             this.sfdc.query(soql, (error, result) => {
                 if (error) {
                     reject(error);
@@ -135,7 +135,7 @@ module.exports = class QuizSessionRestResource {
             ${ns}Current_Question__r.${ns}Answer_B__c, 
             ${ns}Current_Question__r.${ns}Answer_C__c, 
             ${ns}Current_Question__r.${ns}Answer_D__c 
-            FROM ${ns}Quiz_Session__c`;
+            FROM ${ns}Quiz_Session__c WHERE Status__c='Active'`;
             this.sfdc.query(soql, (error, result) => {
                 if (error) {
                     reject(error);
