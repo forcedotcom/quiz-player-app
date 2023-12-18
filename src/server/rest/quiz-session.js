@@ -17,7 +17,7 @@ module.exports = class QuizSessionRestResource {
      */
     getSession(request, response) {
         const ns = Configuration.getSfNamespacePrefix();
-        const soql = `SELECT ${ns}Phase__c FROM ${ns}Quiz_Session__c`;
+        const soql = `SELECT ${ns}Phase__c FROM ${ns}Quiz_Session__c WHERE Status__c='Active'`;
         this.sfdc.query(soql, (error, result) => {
             if (error) {
                 console.error('getSession', error);
