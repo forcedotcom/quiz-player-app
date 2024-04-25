@@ -5,7 +5,9 @@ input {
     border: 1px solid #dddbda;
     border-radius: 0.25rem;
     width: 100%;
-    transition: border 0.1s linear, background-color 0.1s linear;
+    transition:
+        border 0.1s linear,
+        background-color 0.1s linear;
     display: inline-block;
     box-sizing: border-box;
     padding: 0 1rem 0 0.75rem;

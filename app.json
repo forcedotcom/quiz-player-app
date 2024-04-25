@@ -12,7 +12,7 @@
         },
         "SF_API_VERSION": {
             "description": "Salesforce API version",
-            "value": "55.0",
+            "value": "60.0",
             "required": true
         },
         "SF_USERNAME": {

@@ -25,7 +25,7 @@ export default class App extends LightningElement {
     pingTimeout;
     ws;
 
-    PLAYER_APP_VERSION = '3.0.1';
+    PLAYER_APP_VERSION = '3.0.2';
 
     @wire(getCurrentSession)
     getCurrentSession({ error, data }) {
